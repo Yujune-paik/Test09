@@ -1,53 +1,21 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
+class W4_Completed extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final double dH = MediaQuery.of(context).size.height;
-    final double dW = MediaQuery.of(context).size.width;
-    double std_font_size = dH*0.03;
-    String _state="提出済";
+    final double dH = MediaQuery.of(context).size.height; //画面のHeight
+    final double dW = MediaQuery.of(context).size.width;  //画面のWidth
+    double std_font_size = dH*0.03; //標準的な文字サイズ
+    String _state="不明";  //提出状況
+    int judge_state=0;  //0で未提出，それ以外で提出済
     List<String> Student_id = [
       "AA11111",
       "AA11112",
       "AA11113",
     ];
 
-    if(_counter==0) {
+    if(judge_state==0) {
       _state="未提出";
     } else {
       _state="提出済";
