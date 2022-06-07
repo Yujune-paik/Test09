@@ -6,6 +6,11 @@
 ***  Purpose       	: 画面7(W7_Profile)の画面を作る
 ***
 *******************************************************************/
+/*
+*** Revision :
+*** V1.0 : 千手香穂, 2022/06/02
+*/
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
