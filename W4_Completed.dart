@@ -1,3 +1,16 @@
+/*******************************************************************
+ ***  File Name		: W4_Completed.dart
+ ***  Version		: V1.0
+ ***  Designer		: 西尾　翔輝
+ ***  Date			: 2022.06.07
+ ***  Purpose       	: 課題提出状況を表示する
+ ***
+ *******************************************************************/
+/*
+*** Revision :
+*** V1.0 : 西尾翔輝, 2022.06.07
+*/
+
 import 'package:flutter/material.dart';
 
 class W4_Completed extends StatelessWidget {
