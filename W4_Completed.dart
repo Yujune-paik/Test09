@@ -10,11 +10,18 @@
 *** Revision :
 *** V1.0 : 西尾翔輝, 2022.06.07
 */
+<<<<<<< HEAD
 
 import 'package:flutter/material.dart';
 
 class W4_Completed extends StatelessWidget {
+=======
 
+import 'package:flutter/material.dart';
+>>>>>>> refs/remotes/origin/al20042
+
+class W4_Completed extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     final double dH = MediaQuery.of(context).size.height; //画面のHeight
