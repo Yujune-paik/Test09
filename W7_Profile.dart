@@ -1,3 +1,11 @@
+/*******************************************************************
+***  File Name		: W7_Profile.dart
+***  Version		: V1.0
+***  Designer		: 千手　香穂
+***  Date			: 2022.06.02
+***  Purpose       	: 画面7(W7_Profile)の画面を作る
+***
+*******************************************************************/
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
