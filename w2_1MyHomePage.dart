@@ -144,8 +144,7 @@ class W2_1MyHomePage extends StatelessWidget {
                 ),
 
               ),
-
-              //課題追加ボタン
+              
               /*const ButtonBar(
                 children: [
 
@@ -162,6 +161,7 @@ class W2_1MyHomePage extends StatelessWidget {
           ),
 
         ),
+        //課題追加ボタン
         floatingActionButton: FloatingActionButton(
           onPressed: () {
 
