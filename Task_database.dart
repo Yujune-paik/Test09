@@ -9,7 +9,7 @@
 /*
 *** Revision :
 *** V1.0 : 千手香穂, 2022/06/14
-*** V1.1 : 千手香穂, 2022/06/14 _createDBにsb_idを追加
+*** V1.1 : 千手香穂, 2022/06/14 sb_idを追加
 */
 
 import 'package:path/path.dart';
