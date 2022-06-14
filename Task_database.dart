@@ -9,6 +9,7 @@
 /*
 *** Revision :
 *** V1.0 : 千手香穂, 2022/06/14
+*** V1.1 : 千手香穂, 2022/06/14 _createDBにsb_idを追加
 */
 
 import 'package:path/path.dart';
@@ -48,6 +49,7 @@ class TaskDatabase {
     ${TaskFields.isPrivate} $integerType,
     ${TaskFields.task} $textType,
     ${TaskFields.subject} $textType,
+    ${TaskFields.sb_id} $textType,
     ${TaskFields.time} $textType
     )
     ''');
@@ -56,7 +58,7 @@ class TaskDatabase {
     //引数として与えられたデータを新規タスクとしてDBに追加する
     Future<Task> add_Task(Task task) async {
         /*引数はオブジェクト引数にした方がわかりやすい？どうかな
-        引数を(int isPrivate, String task, String subject, String deadline)にするなら
+        引数を(int isPrivate, String task, String subject, String sb_id, String deadline)にするなら
         try {
             Datetime time = DateFormat('y/MM/dd HH:mm').parseStrict(deadline);
         } catch(e){
@@ -70,7 +72,8 @@ class TaskDatabase {
             //自作タスクの場合ここには-1を入れる
             //サーバからとってきたタスクならサーバ上DBでのidを入れるのでどうだろう
             task: task,   
-            subject: subject,  
+            subject: subject, 
+            sb_id: sb_id,   
             deadline: time, 
         );*/
         final db = await instance.database;
@@ -107,19 +110,20 @@ class TaskDatabase {
     //引数として与えられたデータに紐づくデータを編集する
     Future<int> edit_Task(Task task) async {
         /*
-        引数を(int id, bool isCompleted, int isPrivate, String task, String subject, String deadline)にするなら
+        引数を(int id, bool isCompleted, int isPrivate, String task, String subject, String sb_id, String deadline)にするなら
         try {
             Datetime time = DateFormat('y/MM/dd HH:mm').parseStrict(deadline);
         } catch(e){
             throw Exception('deadline: invalid value');
         }
         final task = Task(
-            id: id, 
-            isCompleted: isCompleted, 
-            isPrivate: isPrivate,  
-            task: task,   
-            subject: subject,  
-            deadline: time, 
+            id: id,
+            isCompleted: isCompleted,
+            isPrivate: isPrivate,
+            task: task,
+            subject: subject,
+            sb_id: sb_id,
+            deadline: time,
         );*/
         final db = await instance.database;
         return db.update(
