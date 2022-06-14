@@ -135,10 +135,8 @@ class TaskDatabase {
     //以下あってるかわからん
     Future<int> complete_Task(int id) async {
         final db = await instance.database;
-        return db.rawUpdate('
-            UPDATE $tableTasks 
-            SET isCompleted = 1 
-            WHERE ${TaskFields.id} = $id'
+        return db.rawUpdate(
+            'UPDATE $tableTasks SET isCompleted = 1 WHERE ${TaskFields.id} = $id'
         ); 
     }
 
