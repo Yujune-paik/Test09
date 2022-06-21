@@ -1,6 +1,6 @@
 /*******************************************************************
 ***  File Name		: Task_database.dart
-***  Version		: V1.0
+***  Version		: V1.2
 ***  Designer		: 千手　香穂
 ***  Date			: 2022.06.14
 ***  Purpose       	: データベースへの処理（書込・削除等）を記述する
@@ -10,7 +10,7 @@
 *** Revision :
 *** V1.0 : 千手香穂, 2022/06/14
 *** V1.1 : 千手香穂, 2022/06/14 _createDBにsbIdを追加
-*** V1.1 : 千手香穂, 2022/06/20 deleteExpiredTask()を更新
+*** V1.2 : 千手香穂, 2022/06/20 deleteExpiredTask()を更新
 */
 
 import 'package:path/path.dart';
