@@ -15,10 +15,15 @@
 const String tableTasks = 'tasks';
 
 //カラムの名前定義
-
 class TaskFields {
     static final List<String> values = [
-        id, isCompleted, isPrivate, taskname, subject, sbId, deadline
+        id,
+        isCompleted,
+        isPrivate,
+        taskname,
+        subject,
+        sbId,
+        deadline
     ];
     static const String id = '_id';
     static const String isCompleted = 'isCompleted';
@@ -48,7 +53,7 @@ class Task {
         required this.sbId,
         required this.deadline,
     });
-
+    
     Task copy({
         int? id,
         bool? isCompleted,
