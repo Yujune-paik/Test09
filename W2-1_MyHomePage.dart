@@ -1,75 +1,72 @@
-/*******************************************************
- *** File name      : W2_2MyHomePage
- *** Version        : V1.0
- *** Designer       : 二宮淑霞
- *** Purpose        : ホームページ2_1
- *******************************************************/
-/*
-*** Revision
- */
 import 'package:flutter/material.dart';
 //From. Added 小筆赳 2022.6.9
 import 'W2-2_MyHomePage.dart';
 import 'W3_Search.dart';
 import 'W4_Completed.dart';
 import 'W5_AddTask.dart';
-import 'W6_MyPage.dart';
+import 'W6-1_MyPage.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/cupertino.dart';
+import 'Task_database.dart';
+import 'Task_database_model.dart';
 //To. Added 小筆赳 2022.6.9
-/*void main() {
-  runApp(W2_1MyHomePage());
-}*/
+
 
 //ホーム画面(未提出)
-class W2_1MyHomePage extends StatelessWidget {
 
-  //課題情報を格納
-  final List<Map<String, dynamic>> kadai_mi = [
-    {
-      'text': '課題 1',
-      'date': '6/5 23:59',
-    },
-    {
-      'text': '課題 2',
-      'date': '6/5 23:59',
-    },
-    {
-      'text': '課題 3',
-      'date': '6/5 23:59',
-    },
-  ];
+class W2_1_MyHomePage extends StatefulWidget {
+  const W2_1_MyHomePage({Key?key}) : super(key: key);
 
+  @override
+  _W2_1_MyHomePageState createState() => _W2_1_MyHomePageState();
+}
 
+class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
+  List<Task>tasks = [];
+  bool isLoading = false;
+  final TextEditingController _categoryNameController =
+  new TextEditingController(text: '');
+
+  @override
+  void initState() {
+    super.initState();
+    loadTasks();
+  }
+
+  @override
+  void dispose() {
+    TaskDatabase.instance.closeDatabase();
+    super.dispose();
+  }
+
+  Future loadTasks() async {
+    setState(() => isLoading = true);
+    await TaskDatabase.instance.deleteExpiredTask();
+    tasks = await TaskDatabase.instance.readAllTask();
+    setState(() => isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    //デバイスのサイズを獲得
-    //final double deviceHeight = MediaQuery.of(context).size.height;
-
-    return MaterialApp(
-      title: 'HomePage',
-      //theme: ThemeData(primarySwatch: Colors.blue),
-      home: Scaffold(
-
-        appBar:AppBar(
-          backgroundColor: Colors.green, //アプリバーの背景色
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.account_circle,),
-              onPressed: () {
-                //From. Added 小筆赳 2022.6.9
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => W6_Mypage()),
-                );//To.Changed　小筆赳 2022.6.9
-              },
-            ),
-          ],
-        ),
-
-
-        body: Container(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.green, //アプリバーの背景色
+        actions: <Widget>[
+      IconButton(
+      icon: const Icon(Icons.account_circle,),
+      onPressed: () {
+        //From. Added 小筆赳 2022.6.9
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => W6_Mypage()),
+        );//To.Changed　小筆赳 2022.6.9
+      },
+    ),
+    ],
+      ),
+        body:  Container(
           width: double.infinity,
           padding:const EdgeInsets.all(30),
           child: Column(
@@ -78,10 +75,10 @@ class W2_1MyHomePage extends StatelessWidget {
 
               //課題検索バー
               TextField(
-
                 style: TextStyle(
                   fontSize: 15,
                 ),
+                controller: _categoryNameController,
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(10),
                     border: OutlineInputBorder(),
@@ -89,7 +86,8 @@ class W2_1MyHomePage extends StatelessWidget {
                     fillColor: Colors.white,
                     //From. Added 小筆赳 2022.6.12
                     prefixIcon: IconButton(
-                      onPressed: () {},
+                      onPressed: () =>
+                          _categoryNameController.clear(),
                       icon: Icon(Icons.clear),
                     ),
                     suffixIcon: IconButton(
@@ -97,10 +95,11 @@ class W2_1MyHomePage extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => W3_Search()),
+                              builder: (context) => W3_Search(title: '',)),
                         );
                       },
                       icon: Icon(Icons.search),
+
                     ),
                     //To. Added 小筆赳 2022.6.12
                     hintText:'課題を検索する'
@@ -146,16 +145,55 @@ class W2_1MyHomePage extends StatelessWidget {
               //課題リスト
               SizedBox(
                 height: 500,
-                child: ListView.separated(
-                  itemCount: kadai_mi.length,
+                child: ListView.builder(
+                  itemCount: tasks.length,
                   itemBuilder: (context, index){
-                    return ListTile(
-                      /*leading: const CircleAvatar(
-                          backgroundColor: Colors.green,
-                          child: Text(
-                            kadai_mi[index]['date']
+                    final task = tasks[index];
+                    return Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  task.taskname,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24,
+                                  ),
                           ),
-                        ),*/
+                          Row(
+                            children: [
+                              const Text('期限：'),
+                              Text(DateFormat('yyyy/MM/dd HH:mm')
+                                  .format(task.deadline)),
+                            ],
+                          ),
+                          ],
+                        ),
+                                IconButton(
+                                  alignment: Alignment.center,
+                                  icon: const Icon(
+                                    Icons.check_circle_outline,
+                                    color: Colors.green,
+                                  ),
+                                  onPressed: () async {
+                                    await TaskDatabase.instance.completeTask(task.id!);
+                                  },
+                                ),
+                              ],
+                          ),
+                        ),
+
+                    );
+                  },
+                ),
+              ),
+
+
+                      /*
                       title: Text(kadai_mi[index]['text']),
                       subtitle: Text(kadai_mi[index]['date']),
 
@@ -175,16 +213,8 @@ class W2_1MyHomePage extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => W4_Completed()),
                         );//To. Added 小筆赳 2022.6.9
-                      },
+                      },*/
 
-                    );
-                  },
-                  separatorBuilder: (context, index){
-                    return const Divider();
-                  },
-                ),
-
-              ),
 
               /*const ButtonBar(
                 children: [
@@ -208,15 +238,19 @@ class W2_1MyHomePage extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => W5_AddTask()),
+                  builder: (context) => W5_AddTask(onChangedSubject:
+                      (String value) {  },
+                    onChangedDeadline: (DateTime value) {  },
+                    onChangedIsCompleted: (bool value) {  },
+                    onChangedTaskName: (String value) {  },
+                    onChangedSbId: (String value) {  },
+                    onChangedIsPrivate: (int value) {  },)),
             );//To. Added 小筆赳 2022.6.9
           },
           child: const Icon(Icons.add),
           backgroundColor: Colors.green,
 
         ),
-
-      ),
-    );
+      );
   }
 }
