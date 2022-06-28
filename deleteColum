@@ -1,0 +1,11 @@
+  List deleteColum(String columName, List before) {
+    String space = ": ";
+    String colum = "${columName}${space}";
+    List newResults = [];
+    for (int i = 0; i < before.length; i++) {
+      newResults.add(before[i].toString().replaceAll("$colum", ""));
+      // newResults.add(before[i].toString().replaceAll("{", ""));
+    }
+
+    return newResults;
+  }
