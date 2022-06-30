@@ -7,11 +7,9 @@
 /*
 *** Revision
  */
-import 'package:coriander/Test09/W2-2MyHomePage.dart';
-import 'package:coriander/Test09/W4_Completed.dart';
-import 'package:coriander/W6-1_MyPage.dart';
+
 import 'package:flutter/material.dart';
-import 'W2-1_MyHomePage.dart';
+
 import 'dart:async';
 import 'package:mysql1/mysql1.dart';
 import 'package:mysql_utils/mysql_utils.dart';
@@ -63,26 +61,34 @@ class Login {
       where: {'StudentNum': '$StudentNum'},
     );
 
+    //栗田6/30
+    List result1=deleteColum('PassWord', results);
+    var result2=result1.join(',');
+    result2 = result2.replaceAll("{", "");
+    result2 = result2.replaceAll("}", "");
 
-    results = results.toString().replaceAll("PassWord :", "") as List;
-
-    print(results);
-    if(results == PassWord)
-      return await 1;
+//栗田6/30
+    if(result2 == PassWord){
+      return  1;}
     // var result = await conn.query(
     //     "INSERT INTO StudentInfo (StudentNum, PassWord, CourseId) VALUES ('$studentNum', '$passWord', '$courseId')");
-
+      else return 0;
 
     await conn.close();
     await db.close();
   }
 }
 
-void main(){
-  print("start");
-  dynamic a;
-  a = Login().check("al21821","pass");
-  print(a);
+List deleteColum(String columName, List before) {
+  String space = ": ";
+  String colum = "${columName}${space}";
+  List newResults = [];
+  for (int i = 0; i < before.length; i++) {
+    newResults.add(before[i].toString().replaceAll("$colum", ""));
+  }
 
+  return newResults;
 }
+
+
 
