@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
 //From. Added 小筆赳 2022.6.9
+import 'package:sqflite/sqflite.dart';
+import 'Task_database_model.dart';
+import 'package:intl/intl.dart';
+import 'Task_database.dart';
 import 'W7_Proflie.dart';
 //To. Added 小筆赳 2022.6.9
 
 class W4_Completed extends StatelessWidget {
+/*
+  List<String>result = [];//関数から持ってきた完了者リスト
+  result = add_WhoCompleted(tasks.task);
+  追加した課題を消す処理も必要かも
+*/
+//遷移元から渡される変数を保持する変数を作る
+List<String> result = [];
+W4_Completed(this.result);
+
+List<String> Completed = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +27,7 @@ class W4_Completed extends StatelessWidget {
     double std_font_size = dH*0.03; //標準的な文字サイズ
     String _state="不明";  //提出状況
     int judge_state=0;  //0で未提出，それ以外で提出済
-    List<String> Student_id = [
+    List<String> Student_id = [//完了者を表示、サーバから持ってくる
       "AA11111",
       "AA11112",
       "AA11113",
@@ -26,7 +41,8 @@ class W4_Completed extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF8fab59),
+        backgroundColor: Colors.green,
+
       ),
       body: Column(
           children: <Widget>[
@@ -75,6 +91,7 @@ class W4_Completed extends StatelessWidget {
                     ),
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
+                      //W2から課題情報をひっぱてきて日時を表示
                       child: Text('〇月〇日 XX:XX', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
                     )
                   ]
@@ -134,8 +151,8 @@ class W4_Completed extends StatelessWidget {
               endIndent: 40,
             ),
 
-            //ここから提出者のリストを作らなくてはいけないが，分からないのでとりあえず一人分の表示だけ行う
 
+            //ここから提出者のリストを作らなくてはいけないが，分からないのでとりあえず一人分の表示だけ行う
             for(int i = 0; i<3; i++)
               Column(
                   children: <Widget>[
@@ -175,10 +192,37 @@ class W4_Completed extends StatelessWidget {
                       indent:40,
                       endIndent: 40,
                     ),
+                    ButtonBar(
+                      children: [
+                      ElevatedButton(
+                      child: const Text('削除'),
+                      style: ElevatedButton.styleFrom(
+                      primary: Colors.grey,
+                      onPrimary: Colors.white,
+                      shape: const StadiumBorder(),
+                      ),
+                      onPressed: () {}
+                      )
+                      ]
+                    )
                   ]
               ),
           ]
       ),
     );
   }
+
+  void delete_Task() {
+  }
+
+Future<int> deleteTask(int id) async {
+  var instance;
+  final db = await instance.database;
+  return await db.delete(
+    tableTasks,
+    where: '${TaskFields.id} = ?',
+    whereArgs: [id],
+  );
+}
+
 }
