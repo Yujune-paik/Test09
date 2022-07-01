@@ -17,6 +17,49 @@ import 'package:mysql1/mysql1.dart';
 import 'package:mysql_utils/mysql_utils.dart';
 
 class TaskServer {
+
+  // From. Changed 二宮淑霞 2022.07.01
+  // 課題完了者のリストを取ってくる
+  Future<List> completeList(String TaskName) async {
+    var db = MysqlUtils(
+        settings: {
+          'host': '160.16.141.77',
+          'port': 50900,
+          'user': 'app09',
+          'password': 'pracb2022',
+          'db': 'App_db',
+          'maxConnections': 10,
+          'secure': false,
+          'prefix': '',
+          'pool': true,
+          'collation': 'utf8mb4_general_ci',
+        },
+        errorLog: (error) {
+          print(error);
+        },
+        sqlLog: (sql) {
+          print(sql);
+        },
+        connectInit: (db1) async {
+          print('whenComplete');
+        });
+
+    List results = [];
+    //完了者の抽出
+    var CplStudents = await db.query(
+        'SELECT CplStudent FROM App_db.TaskInfo where TaskName = ("$TaskName")');
+
+    //
+    for (var CplStudent in CplStudents.rowsAssoc) {
+      results.add(CplStudent);
+
+    }
+
+    await db.close();
+
+    return Future.value(results);
+  }
+  //To. Changed 二宮淑霞 2022.07.01
   //データベースの情報
   var settings = new ConnectionSettings(
       host: '160.16.141.77',
