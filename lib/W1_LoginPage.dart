@@ -71,16 +71,19 @@ class W1_LoginPage extends StatelessWidget{
                       int results = await _futureOfList;
                       print(ID.text);
                       print(password.text);
-                      if (results == 0){
+                      if (results == 1){
                       //ここに押したら反応するコードを書く
+                        Future<List> _futureOfList1 = TaskServer().readAllTask(ID.text);
+                        List list = await _futureOfList1;
+
                         Navigator.push( //From Added 小筆赳 2022.6.6
                           context,
                             MaterialPageRoute(
-                              builder: (context) => W2_1_MyHomePage()
+                              builder: (context) => W2_1_MyHomePage(/*ID.text,list*/)
                             ),
                         );//To.Changed　小筆赳 2022.6.9
                       }
-                      else if(results == 1){
+                      else if(results == 0){
                         showDialog(
                             context: context,
                             builder: (BuildContext context) =>
@@ -90,6 +93,7 @@ class W1_LoginPage extends StatelessWidget{
                                 )
                         );
                       }
+
                     },
                   )
                 ],

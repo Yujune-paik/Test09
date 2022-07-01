@@ -7,6 +7,7 @@ import 'package:sqflite/sqflite.dart';
 import 'W1_LoginPage.dart';
 import 'W3_Search.dart';
 import 'W6-2_MyPage.dart';
+import 'address.dart';
 
 
 //To. Added 小筆赳 2022.6.9
@@ -32,6 +33,8 @@ class _W6_MypageState extends State<W6_Mypage> {
 
   get _items => null;
 
+  TextEditingController name= TextEditingController();
+  TextEditingController address= TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +78,8 @@ class _W6_MypageState extends State<W6_Mypage> {
                       MaterialPageRoute(
                           builder: (context) => SecondScreen()),
                     );
+
+                    add_Address().add_address(name.text, address.text);
                     _saveData();
                     showDialog(
                         context: context,
