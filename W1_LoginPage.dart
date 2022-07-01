@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:coriander/main.dart';
 import 'W2-2_MyHomePage.dart';
 import 'W2-1_MyHomePage.dart';
-import 'W6_MyPage.dart';
+import 'Login.dart';
+import 'TaskServer.dart';
 //To.Changed　小筆赳 2022.6.9
 
 // From. Changed 小筆赳 2022.6.8
@@ -14,9 +15,17 @@ class W1_LoginPage extends StatelessWidget{
   @override
   Widget build(BuildContext context)  {
     var  Size= MediaQuery.of(context).size;
+
+    //Future<List> _futureOfList = Login().check("al21821");//ログイン処理
+    TextEditingController ID= TextEditingController();
+    //var integerFromTextfield = ID.text;
+
+    TextEditingController password= TextEditingController();
+    //var integerFromTextfield = password.text;
+
     return Scaffold(
 
-      backgroundColor: Colors.lightGreenAccent,
+      backgroundColor: Colors.green,
       body:
       Center(
         child:
@@ -30,20 +39,55 @@ class W1_LoginPage extends StatelessWidget{
             child:Center(
               child: Column(
                 children:[
-                  const Text('ID'),
-                  TextFormField(),
-                  const Text('パスワード'),
-                  TextFormField(),
+                  TextFormField(
+                controller: ID,
+                decoration: const InputDecoration(
+                    labelText: "ID :"
+                  ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter valid data';
+                  }
+                  return null;
+                },
+                  ),
+                  TextFormField(
+                    controller: password,
+                    decoration: const InputDecoration(
+                        labelText: "パスワード :"
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Enter valid data';
+                      }
+                      return null;
+                    },
+                  ),
                   RaisedButton(
                     child:const Text('ログイン'),
-                    onPressed: (){
+                    onPressed: () async {
+                      //flag = Login().check(ID.text,password.text);
+                      Future<int> _futureOfList = Login().check(ID.text,password.text);
+                      int results = await _futureOfList;
+                      if (results == 1){
                       //ここに押したら反応するコードを書く
-                      Navigator.push( //From Added 小筆赳 2022.6.6
-                        context,
-                          MaterialPageRoute(
-                              builder: (context) => W2_1MyHomePage()),
-                      );//To.Changed　小筆赳 2022.6.9
-
+                        Navigator.push( //From Added 小筆赳 2022.6.6
+                          context,
+                            MaterialPageRoute(
+                              builder: (context) => W2_1_MyHomePage()
+                            ),
+                        );//To.Changed　小筆赳 2022.6.9
+                      }
+                      else{
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                AlertDialog(
+                                  title: Text("エラー"),
+                                  content: Text('IDかパスワードガチガイマス'),
+                                )
+                        );
+                      }
                     },
                   )
                 ],
