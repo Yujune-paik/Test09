@@ -198,7 +198,7 @@ class TaskServer {
     for (var course in courseIds.rowsAssoc) {
       String courseId = course.colAt(0);
       var tasks = await db.query(
-          'SELECT DISTINCT TaskName, Deadline, TaskId FROM App_db.TaskInfo where CourseId = ("$courseId")');
+          'SELECT DISTINCT TaskName, Deadline, TaskId FROM App_db.TaskInfo where CourseId = ("$courseId")  ORDER BY Deadline ASC');
 
 // 課題の名前を取得する
       for (var task in tasks.rowsAssoc) {
