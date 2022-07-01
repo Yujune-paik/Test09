@@ -6,18 +6,22 @@
  ***  Purpose       	: サーバにユーザ情報を要求し、ユーザ情報を返す
  ***
  *******************************************************************/
-import 'package:b1/LogInPage.dart';
-import 'package:b1/my_page.dart';
+import 'LogInPage.dart';
+import 'my_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:mysql_utils/mysql_utils.dart';
 import 'dart:async';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
 class read_User {
-  Future _connect() async {
+  Future readuser() async {
+//学籍番号を読み取る
+    final SharedPreferences student = await SharedPreferences.getInstance();
+    String studentNum = student.getString('number') ?? '';
+
     var db = MysqlUtils(
         settings: {
           'host': '160.16.141.77',
@@ -44,12 +48,12 @@ class read_User {
     var row = await db.getAll(
       table: 'StudentInfo',
       fields: '*',
+      where:"StudentNum='$studentNum'",
     );
 
 
     List result = deleteColum(
         'StudentNum', deleteColum('PassWord', deleteColum('CourseId', row)));
-
     await db.close();
     return result;
   }
@@ -61,7 +65,6 @@ class read_User {
     for (int i = 0; i < before.length; i++) {
       newResults.add(before[i].toString().replaceAll("$colum", ""));
     }
-
     return newResults;
   }
 }

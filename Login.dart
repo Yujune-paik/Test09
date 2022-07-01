@@ -32,7 +32,7 @@ class Login {
   //学籍番号とパスワードが一致していれば”1”を返す。
   Future <int> check(String StudentNum, String PassWord) async {
     final conn = await MySqlConnection.connect(settings);
-
+    SharedPreferences.setMockInitialValues({});
     final SharedPreferences student = await SharedPreferences.getInstance();
     student.setString('number', StudentNum);
 

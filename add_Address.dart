@@ -10,7 +10,6 @@ class add_Address {
   //学籍情報を取り出す
     final SharedPreferences student = await SharedPreferences.getInstance();
     String studentNum = student.getString('number') ?? '';
-
     final conn = await MySqlConnection.connect(ConnectionSettings(
         host: '160.16.141.77',
         port: 50900,
