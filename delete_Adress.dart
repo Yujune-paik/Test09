@@ -1,9 +1,15 @@
 import 'package:mysql1/mysql1.dart';
 import 'dart:async';
 import 'W6-1_MyPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class delete_Adress {
-  Future _delete(String studentNum,String addressName) async {
+class delete_Address {
+  Future delete_address(String studentNum,String addressName) async {
+
+    //学籍情報を取り出す
+    final SharedPreferences student = await SharedPreferences.getInstance();
+    String studentNum = student.getString('number') ?? '';
+
     try {
       final conn = await MySqlConnection.connect(ConnectionSettings(
           host: '160.16.141.77',
@@ -21,11 +27,11 @@ class delete_Adress {
           "delete from StudentAddr where StudentNum='$studentNum' and AddressName='$addressName'");
 
       conn.close();
-      return true;
+      return 1;
     }
 
     catch (e) {
-      return false;
+      return 0;
     }
   }
 }

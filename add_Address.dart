@@ -1,12 +1,16 @@
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mysql1/mysql1.dart';
 import 'dart:async';
 import 'W6-1_MyPage.dart';
 
 
 
-class add_Adress {
-  Future _add(String studentNum,String addressName,String address) async {
+class add_Address {
+  Future add_address(String addressName,String address) async {
+  //学籍情報を取り出す
+    final SharedPreferences student = await SharedPreferences.getInstance();
+    String studentNum = student.getString('number') ?? '';
+
     final conn = await MySqlConnection.connect(ConnectionSettings(
         host: '160.16.141.77',
         port: 50900,
@@ -22,9 +26,9 @@ class add_Adress {
 */
       await conn.query(
           "INSERT INTO StudentAddr (StudentNum, AddressName, Address) VALUES ('$studentNum','$addressName', '$address')");
-      return true;
+      return 1;
     } catch (e) {
-      return false;
+      return 0;
     }
     finally {
       await conn.close();
