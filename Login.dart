@@ -2,23 +2,24 @@
  *** File name      : W2_2MyHomePage
  *** Version        : V1.0
  *** Designer       : 二宮淑霞
- *** Purpose        : ログイン処理
+ *** Purpose        : ホームページ2_2
  *******************************************************/
 /*
-*** Revision
+*** Revision:
+*** V1.1 : 栗田遥生, 2022.07.02
  */
+
 import 'package:flutter/material.dart';
 
 import 'dart:async';
 import 'package:mysql1/mysql1.dart';
 import 'package:mysql_utils/mysql_utils.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
 //ホーム画面(提出済)
 class Login {
-
   //データベースの情報
   var settings = new ConnectionSettings(
       host: '160.16.141.77',
@@ -27,10 +28,14 @@ class Login {
       db: 'App_db',
       password: 'pracb2022');
 
+  //List flag = [];
 
   //学籍番号とパスワードが一致していれば”1”を返す。
-  Future<int> check(String StudentNum, String PassWord) async {
+  Future <int> check(String StudentNum, String PassWord) async {
     final conn = await MySqlConnection.connect(settings);
+    SharedPreferences.setMockInitialValues({});
+    final SharedPreferences student = await SharedPreferences.getInstance();
+    student.setString('number', StudentNum);
 
     var db = MysqlUtils(
         settings: {
@@ -61,18 +66,20 @@ class Login {
       where: {'StudentNum': '$StudentNum'},
     );
 
-    //栗田6/30
+    //From. Changed 栗田遥生 2022.07.02
     List result1=deleteColum('PassWord', results);
     var result2=result1.join(',');
     result2 = result2.replaceAll("{", "");
     result2 = result2.replaceAll("}", "");
 
-//栗田6/30
+//From. Changed 栗田遥生 2022.07.02
     if(result2 == PassWord){
-      return Future.value(1);}
+      return  Future<int>.value(1);}
     // var result = await conn.query(
     //     "INSERT INTO StudentInfo (StudentNum, PassWord, CourseId) VALUES ('$studentNum', '$passWord', '$courseId')");
-    else return Future.value(0);
+    else {
+      return Future<int>.value(0);
+    }
 
     await conn.close();
     await db.close();
@@ -89,15 +96,3 @@ List deleteColum(String columName, List before) {
 
   return newResults;
 }
-
-
-
-
-void main(){
-  print("start");
-  dynamic a;
-  Login().check("al21821","pass");
-  print(a);
-
-}
-
