@@ -1,3 +1,10 @@
+/*******************************************************
+ *** File name      : W4_Completed.dart
+ *** Version        : V1.0
+ *** Designer       : 西尾翔輝
+ *** Purpose        : 課題完了表示
+ *******************************************************/
+
 import 'package:flutter/material.dart';
 //From. Added 小筆赳 2022.6.9
 import 'package:sqflite/sqflite.dart';
