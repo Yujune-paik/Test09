@@ -9,6 +9,7 @@
 /*
 *** Revision :
 *** V1.0 : 西尾　翔輝, 2022.06.29
+*** V1.1 : 西尾　翔輝, 2022.07.05 Add_Address
 */
 
 import 'dart:async';
@@ -25,6 +26,17 @@ class User_server {
 
   //ユーザ情報を追加
   Future<void> add_Address(var StudentNum, var AddressName, var Address) async {
+
+    //From. Added 西尾　翔輝 2022.07.05
+    //空文字排除
+    if(StudentNum.isEmpty || AddressName.isEmpty || Address.isEmpty)return ;
+
+    //前後の空白削除
+    StudentNum = StudentNum.trim();
+    AddressName = AddressName.trim();
+    Address = Address.trim();
+    //To. Added 西尾　翔輝 2022.07.05
+
     //既に同じデータがないかcheck
     Future<List> _check = read_User(StudentNum);//Future型のcheck用リスト
     List check = await _check;//check用リスト
@@ -110,29 +122,3 @@ class User_server {
     await db.close();
   }
 }
-
-//テスト用メイン(削除予定)
-/*
-void main() async {
-  //追加
-  //User_server().add_Address("al20042", "Line", "41418");
-  //User_server().add_Address("al20043", "Line", "41417");
-  //User_server().add_Address("al20042", "g-mail", "pokopoko@gmail.com");
-  //User_server().add_Address("al20041", "g-mail", "jidousha@gmail.com");
-
-  //削除
-  //User_server().delete_Address("al20042", "Line", "41417");
-  //User_server().delete_Address("al20043", "Line", "41416");
-  //User_server().delete_Address("al21821", "g-mail", "jidousha@gmail.com");
-  //User_server().delete_Address("al20042", "*", "*");
-  // AddressNameとAddressが"*"でそのユーザのデータ全削除
-  // Addressのみ"*"だとそのユーザのAddressNameのものだけ全削除
-
-  //抽出
-  //Future<List> _futureOfList = User_server().read_User("al20042");
-  //List results = await _futureOfList;
-  //for(int i=0; i<results.length; i+=3){
-    //print(results[i] + ' ' + results[i+1] + ' ' + results[i+2]);
-  //}
-}
-*/
