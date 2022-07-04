@@ -10,21 +10,29 @@ class SecondScreen extends StatefulWidget {
   _SecondScreenState createState() => _SecondScreenState();
 }
 
+
 class _SecondScreenState extends State<SecondScreen> {
-  List<Widget> _items = <Widget>[];
   List results = [];
 
-  @override
   void read()  async{
-    super.initState();
     Future<List> _futureOfList = read_Address().read_address();
     results = await _futureOfList;
   }
 
-  @override
-  void initState() {
-    super.initState();
+  Widget _read(){
     read();
+    return  ListView.separated(
+      itemCount: results.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+
+          title: Text(results[index]),
+        );
+      },
+      separatorBuilder: (context, index) {
+        return const Divider();
+      },
+    );
   }
 
   @override
@@ -34,24 +42,7 @@ class _SecondScreenState extends State<SecondScreen> {
         backgroundColor: Colors.green,
         title: Text('公開する連絡先'),
       ),
-      body: ListView.separated(
-        itemCount: results.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-
-            title: Text(results[index]),
-            //subtitle: Text(results[index]['date']),
-
-
-            //クリックされた時の処理（W4）
-
-
-          );
-        },
-        separatorBuilder: (context, index) {
-          return const Divider();
-        },
-      ),
+      body:_read(),
     );
   }
 }
