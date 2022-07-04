@@ -1,124 +1,302 @@
-/*******************************************************************
- ***  File Name		: User_server.dart
- ***  Version		: V1.0
- ***  Designer		: 西尾 翔輝
- ***  Date			: 2022.06.29
- ***  Purpose       	: ユーザ情報に関するDBとやりとりする。
- ***
- *******************************************************************/
-/*
-*** Revision :
-*** V1.0 : 西尾　翔輝, 2022.06.29
-*** V1.1 : 西尾　翔輝, 2022.07.05 Add_Address
-*/
+/*******************************************************
+ *** File name      : W4_Completed.dart
+ *** Version        : V1.0
+ *** Designer       : 西尾　翔輝
+ *** Purpose        : 課題完了表示
+ *******************************************************/
 
-import 'dart:async';
-import 'package:mysql1/mysql1.dart';
-import 'package:mysql_utils/mysql_utils.dart';
+import 'package:flutter/material.dart';
+//From. Added 小筆赳 2022.6.9
+import 'package:sqflite/sqflite.dart';
+import 'Task_database_model.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/cupertino.dart';
+import 'Task_database.dart';
+import 'W7_Profile.dart';
+import 'W2-1_MyHomePage.dart';
+import 'TaskServer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+//To. Added 小筆赳 2022.6.9
 
-class User_server {
-  var settings = new ConnectionSettings(
-      host: '160.16.141.77',
-      port: 50900,
-      user: 'app09',
-      db: 'App_db',
-      password: 'pracb2022');  //データベースの情報
+class W4_Completed extends StatefulWidget {
+  const W4_Completed({Key?key}) : super(key: key);
 
-  //ユーザ情報を追加
-  Future<void> add_Address(var StudentNum, var AddressName, var Address) async {
+  @override
+  _W4_CompletedState createState() => _W4_CompletedState();
 
-    //From. Added 西尾　翔輝 2022.07.05
-    //空文字排除
-    if(StudentNum.isEmpty || AddressName.isEmpty || Address.isEmpty)return ;
+}
 
-    //前後の空白削除
-    StudentNum = StudentNum.trim();
-    AddressName = AddressName.trim();
-    Address = Address.trim();
-    //To. Added 西尾　翔輝 2022.07.05
+class _W4_CompletedState extends State<W4_Completed>{
 
-    //既に同じデータがないかcheck
-    Future<List> _check = read_User(StudentNum);//Future型のcheck用リスト
-    List check = await _check;//check用リスト
-    for(int i=0; i<check.length; i+=3) {
-      if ((check[i + 1] == AddressName) && (check[i + 2] == Address)) return ;
-    }
+  List results = [];//関数から持ってきた完了者リスト
+  int taskid = 0;
 
-    final conn = await MySqlConnection.connect(settings);  //データベースの情報
-    var result = await conn.query(
-        "INSERT INTO StudentAddr (StudentNum, AddressName, Address) VALUES ('$StudentNum','$AddressName', '$Address')");
-    close_Database1(conn);
+
+  @override
+  void initState() {
+    super.initState();
+    //init();
+
+  }
+  Task task = Task(
+    isCompleted: false,
+    isPrivate: '-1',
+    //自作タスクの場合ここには-1を入れる
+    //サーバからとってきたタスクならサーバ上DBでのidを入れるのでどうだろう
+    taskname: 'taskname',
+    subject: 'subject',
+    sbId: 'sbId',
+    deadline: DateTime.now(),
+  );
+
+  void init() async{
+    final SharedPreferences student = await SharedPreferences.getInstance();
+    taskid = (student.getInt('taskid') ?? '') as int;
+    task = await TaskDatabase.instance.readTask(taskid);
+    Future<List> _futureOfList = TaskServer().completeList(task.taskname);
+    results = await _futureOfList;
+
   }
 
-  //ユーザ情報を削除
-  Future<void> delete_Address(var StudentNum, var AddressName, var Address) async{
-    final conn = await MySqlConnection.connect(settings);  //データベースの情報
-    //"*"分岐処理
-    if(AddressName == "*" && Address == "*"){
-      var result = await conn.query(
-          "DELETE FROM StudentAddr WHERE StudentNum = ('$StudentNum')");
-    } else if(Address == "*"){
-      var result = await conn.query(
-          "DELETE FROM StudentAddr WHERE StudentNum = ('$StudentNum') AND AddressName = ('$AddressName')");
+
+
+//遷移元から渡される変数を保持する変数を作る
+//List<String> result = [];
+//W4_Completed(this.result);
+
+//List<String> Completed = [];
+
+  @override
+  Widget build(BuildContext context) {
+    final double dH = MediaQuery.of(context).size.height; //画面のHeight
+    final double dW = MediaQuery.of(context).size.width;  //画面のWidth
+    double std_font_size = dH*0.03; //標準的な文字サイズ
+    String _state="不明";  //提出状況
+    int judge_state=0;
+    if(task.isCompleted == true)
+    {
+      judge_state=1;
+    }
+    //0で未提出，それ以外で提出済
+
+    if(judge_state==0) {
+      _state="未提出";
     } else {
-      var result = await conn.query(
-        //一行120文字以上になってる
-          "DELETE FROM StudentAddr WHERE StudentNum = ('$StudentNum') AND AddressName = ('$AddressName') AND Address = ('$Address')");
+      _state="提出済";
     }
-    close_Database1(conn);
-  }
+    init();
 
-  //ユーザ情報を引き出す
-  Future<List> read_User(var StudentNum) async{
-    var AddressName, Address;
-    var db = MysqlUtils(
-        settings: {
-          'host': '160.16.141.77',
-          'port': 50900,
-          'user': 'app09',
-          'password': 'pracb2022',
-          'db': 'App_db',
-          'maxConnections': 10,
-          'secure': false,
-          'prefix': '',
-          'pool': true,
-          'collation': 'utf8mb4_general_ci',
-        },
-        errorLog: (error) {
-          print(error);
-        },
-        sqlLog: (sql) {
-          print(sql);
-        },
-        connectInit: (db1) async {
-          print('whenComplete');
-        });  //データベースの情報
+    return Scaffold(
+      //From.added 小筆赳 2022.06.28
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        leading: TextButton(
+          child: Text(
+            '☓',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+            ),
+          ),
+          onPressed: () => Navigator.of(context
+          ).pop(),
+        ),
+      ),
+      //To.added 小筆赳 2022.06.28
+      body: Column(
+          children: <Widget>[
+            Container(
+              margin:EdgeInsets.fromLTRB(0, dH*0.01, 0, dH*0.005),
+              child: Text(task.taskname, style: TextStyle(fontSize: dH*0.04, fontWeight: FontWeight.bold)),
+            ),
+            Divider(
+              color: Colors.green,
+              thickness: 3,
+              height: 0,
+              indent:25,
+              endIndent: 25,
+            ),
+            Container(
+              margin:EdgeInsets.all(10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
+                      child: Text('科目', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
+                      child: Text(task.subject, style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
+                    )
+                  ]
+              ),
+            ),
+            Divider(
+              color: Colors.black26,
+              thickness: 3,
+              height: 0,
+              indent:40,
+              endIndent: 40,
+            ),
+            Container(
+              margin:EdgeInsets.all(10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
+                      child: Text('締切', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
+                      //W2から課題情報をひっぱてきて日時を表示
+                      child: Text(DateFormat('yyyy/MM/dd HH:mm')
+                          .format(task.deadline), style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
+                    )
+                  ]
+              ),
+            ),
+            Divider(
+              color: Colors.black26,
+              thickness: 3,
+              height: 0,
+              indent:40,
+              endIndent: 40,
+            ),
+            Container(
+              margin:EdgeInsets.all(10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
+                      child: Text('提出状況', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.black54,
+                      ),
+                      padding: EdgeInsets.fromLTRB(dW*0.03, dH*0.005, dW*0.03, dH*0.005),
+                      child: Text(_state, style: TextStyle(fontSize: std_font_size, color: Colors.white, fontWeight: FontWeight.w400)),
+                    )
+                  ]
+              ),
+            ),
+            Divider(
+              color: Color(0xFF8fab59),
+              thickness: 3,
+              height: 0,
+              indent:25,
+              endIndent: 25,
+            ),
 
-    var row = await db.query(
-        "SELECT * FROM App_db.StudentAddr WHERE StudentNum = ('$StudentNum')"
+            //From.added 小筆赳 2022.07.01
+            TextButton(
+              child: Text('削除する'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.green,
+                onPrimary: Colors.white,
+                shape: const StadiumBorder(),
+              ),
+              onPressed: () async {
+                //課題を消す
+                await TaskDatabase.instance.deleteTask(task.id!);
+                Navigator.of(context).pop();
+              },
+            ),
+            //To.added 小筆赳 2022.07.01
+            Container(
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      margin:EdgeInsets.fromLTRB(dW*0.1, dH*0.025, 0, dH*0.01),
+                      child: Text('課題完了者一覧', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
+                    ),
+                  ]
+              ),
+            ),
+            Divider(
+              color: Colors.black26,
+              thickness: 3,
+              height: 0,
+              indent:40,
+              endIndent: 40,
+            ),
+
+
+            //ここから提出者のリストを作らなくてはいけないが，分からないのでとりあえず一人分の表示だけ行う
+            SizedBox(
+              height: 300,
+              child: ListView.builder(
+                itemCount: results.length,
+                itemBuilder: (context, index){
+                  final result = results[index];
+                  return Container(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            margin:EdgeInsets.fromLTRB(dW*0.15, dH*0.01, 0, dH*0.01),
+                            child: Icon(
+                              Icons.assignment_ind,
+                              size: std_font_size,
+                            ),
+                          ),
+                          Container(
+                            margin:EdgeInsets.fromLTRB(dW*0.02, dH*0.01, 0, dH*0.01),
+                            //From. Added 小筆赳 2022.6.12
+                            child: TextButton(
+                              child: Text(result, style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.w400)),
+                              onPressed: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => W7_Profile()),
+                                );
+                              },
+                            ),
+                            //To. Added 小筆赳 2022.6.12
+                          ),
+                        ]
+                    ),
+                  );
+                  /*Divider(
+                              color: Colors.black26,
+                              thickness: 3,
+                              height: 0,
+                              indent:40,
+                              endIndent: 40,
+                            ),*/
+
+                },
+              ),
+            ),
+          ]
+      ),
+
     );
-    //抽出データのリスト化
-    List<String> info = [];//返り値リスト
-    for (var item in row.rowsAssoc) {
-      String STUDENTNUM = item.colAt(0);
-      String ADDRESSNAME = item.colAt(1);
-      String ADDRESS = item.colAt(2);
-      //print(STUDENTNUM + ' ' + ADDRESSNAME + ' ' + ADDRESS);
-      info.add('$STUDENTNUM');
-      info.add('$ADDRESSNAME');
-      info.add('$ADDRESS');
-    }
-
-    close_Database2(db);
-    return info;
   }
 
-  //final型：データベースをクローズする
-  void close_Database1(final conn) async {
-    await conn.close();
+/* void deleteTask() async{
+    var instance;
+    final db = await instance.database;
+    return await db.delete(
+      tableTasks,
+      where: '${TaskFields.id} = ?',
+      //whereArgs: [id],
+    );
   }
-  //var型：データベースをクローズする
-  void close_Database2(var db) async {
-    await db.close();
-  }
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    throw UnimplementedError();
+  }*/
+
+
 }
