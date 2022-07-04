@@ -1,190 +1,124 @@
 /*******************************************************************
- ***  File Name		: W4_Completed.dart
+ ***  File Name		: User_server.dart
  ***  Version		: V1.0
- ***  Designer		: 西尾　翔輝
- ***  Date			: 2022.06.07
- ***  Purpose       	: 課題提出状況を表示する
+ ***  Designer		: 西尾 翔輝
+ ***  Date			: 2022.06.29
+ ***  Purpose       	: ユーザ情報に関するDBとやりとりする。
  ***
  *******************************************************************/
 /*
 *** Revision :
-*** V1.0 : 西尾翔輝, 2022.06.07
+*** V1.0 : 西尾　翔輝, 2022.06.29
+*** V1.1 : 西尾　翔輝, 2022.07.05 Add_Address
 */
-<<<<<<< HEAD
 
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:mysql1/mysql1.dart';
+import 'package:mysql_utils/mysql_utils.dart';
 
-class W4_Completed extends StatelessWidget {
-=======
+class User_server {
+  var settings = new ConnectionSettings(
+      host: '160.16.141.77',
+      port: 50900,
+      user: 'app09',
+      db: 'App_db',
+      password: 'pracb2022');  //データベースの情報
 
-import 'package:flutter/material.dart';
->>>>>>> refs/remotes/origin/al20042
+  //ユーザ情報を追加
+  Future<void> add_Address(var StudentNum, var AddressName, var Address) async {
 
-class W4_Completed extends StatelessWidget {
-  
-  @override
-  Widget build(BuildContext context) {
-    final double dH = MediaQuery.of(context).size.height; //画面のHeight
-    final double dW = MediaQuery.of(context).size.width;  //画面のWidth
-    double std_font_size = dH*0.03; //標準的な文字サイズ
-    String _state="不明";  //提出状況
-    int judge_state=0;  //0で未提出，それ以外で提出済
-    List<String> Student_id = [
-      "AA11111",
-      "AA11112",
-      "AA11113",
-    ];
+    //From. Added 西尾　翔輝 2022.07.05
+    //空文字排除
+    if(StudentNum.isEmpty || AddressName.isEmpty || Address.isEmpty)return ;
 
-    if(judge_state==0) {
-      _state="未提出";
-    } else {
-      _state="提出済";
+    //前後の空白削除
+    StudentNum = StudentNum.trim();
+    AddressName = AddressName.trim();
+    Address = Address.trim();
+    //To. Added 西尾　翔輝 2022.07.05
+
+    //既に同じデータがないかcheck
+    Future<List> _check = read_User(StudentNum);//Future型のcheck用リスト
+    List check = await _check;//check用リスト
+    for(int i=0; i<check.length; i+=3) {
+      if ((check[i + 1] == AddressName) && (check[i + 2] == Address)) return ;
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF8fab59),
-      ),
-      body: Column(
-          children: <Widget>[
-            Container(
-              margin:EdgeInsets.fromLTRB(0, dH*0.01, 0, dH*0.005),
-              child: Text('課題名', style: TextStyle(fontSize: dH*0.04, fontWeight: FontWeight.bold)),
-            ),
-            Divider(
-              color: Color(0xFF8fab59),
-              thickness: 3,
-              height: 0,
-              indent:25,
-              endIndent: 25,
-            ),
-            Container(
-              margin:EdgeInsets.all(10),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
-                      child: Text('科目', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
-                      child: Text('科目名', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
-                    )
-                  ]
-              ),
-            ),
-            Divider(
-              color: Colors.black26,
-              thickness: 3,
-              height: 0,
-              indent:40,
-              endIndent: 40,
-            ),
-            Container(
-              margin:EdgeInsets.all(10),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
-                      child: Text('締切', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
-                      child: Text('〇月〇日 XX:XX', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
-                    )
-                  ]
-              ),
-            ),
-            Divider(
-              color: Colors.black26,
-              thickness: 3,
-              height: 0,
-              indent:40,
-              endIndent: 40,
-            ),
-            Container(
-              margin:EdgeInsets.all(10),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
-                      child: Text('提出状況', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.black54,
-                      ),
-                      padding: EdgeInsets.fromLTRB(dW*0.03, dH*0.005, dW*0.03, dH*0.005),
-                      child: Text('$_state', style: TextStyle(fontSize: std_font_size, color: Colors.white, fontWeight: FontWeight.w400)),
-                    )
-                  ]
-              ),
-            ),
-            Divider(
-              color: Color(0xFF8fab59),
-              thickness: 3,
-              height: 0,
-              indent:25,
-              endIndent: 25,
-            ),
-            Container(
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      margin:EdgeInsets.fromLTRB(dW*0.1, dH*0.025, 0, dH*0.01),
-                      child: Text('課題完了者一覧', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
-                    ),
-                  ]
-              ),
-            ),
-            Divider(
-              color: Colors.black26,
-              thickness: 3,
-              height: 0,
-              indent:40,
-              endIndent: 40,
-            ),
+    final conn = await MySqlConnection.connect(settings);  //データベースの情報
+    var result = await conn.query(
+        "INSERT INTO StudentAddr (StudentNum, AddressName, Address) VALUES ('$StudentNum','$AddressName', '$Address')");
+    close_Database1(conn);
+  }
 
-            //ここから提出者のリストを作らなくてはいけないが，分からないのでとりあえず一人分の表示だけ行う
+  //ユーザ情報を削除
+  Future<void> delete_Address(var StudentNum, var AddressName, var Address) async{
+    final conn = await MySqlConnection.connect(settings);  //データベースの情報
+    //"*"分岐処理
+    if(AddressName == "*" && Address == "*"){
+      var result = await conn.query(
+          "DELETE FROM StudentAddr WHERE StudentNum = ('$StudentNum')");
+    } else if(Address == "*"){
+      var result = await conn.query(
+          "DELETE FROM StudentAddr WHERE StudentNum = ('$StudentNum') AND AddressName = ('$AddressName')");
+    } else {
+      var result = await conn.query(
+        //一行120文字以上になってる
+          "DELETE FROM StudentAddr WHERE StudentNum = ('$StudentNum') AND AddressName = ('$AddressName') AND Address = ('$Address')");
+    }
+    close_Database1(conn);
+  }
 
-            for(int i = 0; i<3; i++)
-              Column(
-                  children: <Widget>[
-                    Container(
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              margin:EdgeInsets.fromLTRB(dW*0.15, dH*0.01, 0, dH*0.01),
-                              child: Icon(
-                                Icons.assignment_ind,
-                                size: std_font_size,
-                              ),
-                            ),
-                            Container(
-                              margin:EdgeInsets.fromLTRB(dW*0.02, dH*0.01, 0, dH*0.01),
-                              child: Text(Student_id[i], style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.w400)),
-                            ),
-                          ]
-                      ),
-                    ),
-                    Divider(
-                      color: Colors.black26,
-                      thickness: 3,
-                      height: 0,
-                      indent:40,
-                      endIndent: 40,
-                    ),
-                  ]
-              ),
-          ]
-      ),
+  //ユーザ情報を引き出す
+  Future<List> read_User(var StudentNum) async{
+    var AddressName, Address;
+    var db = MysqlUtils(
+        settings: {
+          'host': '160.16.141.77',
+          'port': 50900,
+          'user': 'app09',
+          'password': 'pracb2022',
+          'db': 'App_db',
+          'maxConnections': 10,
+          'secure': false,
+          'prefix': '',
+          'pool': true,
+          'collation': 'utf8mb4_general_ci',
+        },
+        errorLog: (error) {
+          print(error);
+        },
+        sqlLog: (sql) {
+          print(sql);
+        },
+        connectInit: (db1) async {
+          print('whenComplete');
+        });  //データベースの情報
+
+    var row = await db.query(
+        "SELECT * FROM App_db.StudentAddr WHERE StudentNum = ('$StudentNum')"
     );
+    //抽出データのリスト化
+    List<String> info = [];//返り値リスト
+    for (var item in row.rowsAssoc) {
+      String STUDENTNUM = item.colAt(0);
+      String ADDRESSNAME = item.colAt(1);
+      String ADDRESS = item.colAt(2);
+      //print(STUDENTNUM + ' ' + ADDRESSNAME + ' ' + ADDRESS);
+      info.add('$STUDENTNUM');
+      info.add('$ADDRESSNAME');
+      info.add('$ADDRESS');
+    }
+
+    close_Database2(db);
+    return info;
+  }
+
+  //final型：データベースをクローズする
+  void close_Database1(final conn) async {
+    await conn.close();
+  }
+  //var型：データベースをクローズする
+  void close_Database2(var db) async {
+    await db.close();
   }
 }
