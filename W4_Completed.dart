@@ -1,9 +1,64 @@
 import 'package:flutter/material.dart';
 //From. Added 小筆赳 2022.6.9
+import 'package:sqflite/sqflite.dart';
+import 'Task_database_model.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/cupertino.dart';
+import 'Task_database.dart';
 import 'W7_Profile.dart';
+import 'W2-1_MyHomePage.dart';
+import 'TaskServer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //To. Added 小筆赳 2022.6.9
 
-class W4_Completed extends StatelessWidget {
+class W4_Completed extends StatefulWidget {
+  const W4_Completed({Key?key}) : super(key: key);
+
+  @override
+  _W4_CompletedState createState() => _W4_CompletedState();
+
+}
+
+class _W4_CompletedState extends State<W4_Completed>{
+
+  List results = [];//関数から持ってきた完了者リスト
+  int taskid = 0;
+
+
+  @override
+  void initState() {
+    super.initState();
+    //init();
+
+  }
+  Task task = Task(
+    isCompleted: false,
+    isPrivate: '-1',
+    //自作タスクの場合ここには-1を入れる
+    //サーバからとってきたタスクならサーバ上DBでのidを入れるのでどうだろう
+    taskname: 'taskname',
+    subject: 'subject',
+    sbId: 'sbId',
+    deadline: DateTime.now(),
+  );
+
+  void init() async{
+    final SharedPreferences student = await SharedPreferences.getInstance();
+    taskid = (student.getInt('taskid') ?? '') as int;
+    task = await TaskDatabase.instance.readTask(taskid);
+    Future<List> _futureOfList = TaskServer().completeList(task.taskname);
+    results = await _futureOfList;
+
+  }
+
+
+
+//遷移元から渡される変数を保持する変数を作る
+//List<String> result = [];
+//W4_Completed(this.result);
+
+//List<String> Completed = [];
 
   @override
   Widget build(BuildContext context) {
@@ -11,35 +66,46 @@ class W4_Completed extends StatelessWidget {
     final double dW = MediaQuery.of(context).size.width;  //画面のWidth
     double std_font_size = dH*0.03; //標準的な文字サイズ
     String _state="不明";  //提出状況
-    int judge_state=0;  //0で未提出，それ以外で提出済
-    List<String> Student_id = [//完了者を表示
-      "AA11111",
-      "AA11112",
-      "AA11113",
-    ];
-/*
-    List<String>a = [];
-    a = List results;
-*/
+    int judge_state=0;
+    if(task.isCompleted == true)
+    {
+      judge_state=1;
+    }
+    //0で未提出，それ以外で提出済
+
     if(judge_state==0) {
       _state="未提出";
     } else {
       _state="提出済";
     }
+    init();
 
     return Scaffold(
+      //From.added 小筆赳 2022.06.28
       appBar: AppBar(
         backgroundColor: Colors.green,
+        leading: TextButton(
+          child: Text(
+            '☓',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 20.0,
+            ),
+          ),
+          onPressed: () => Navigator.of(context
+          ).pop(),
+        ),
       ),
+      //To.added 小筆赳 2022.06.28
       body: Column(
           children: <Widget>[
             Container(
               margin:EdgeInsets.fromLTRB(0, dH*0.01, 0, dH*0.005),
-              //task
-              child: Text('課題名', style: TextStyle(fontSize: dH*0.04, fontWeight: FontWeight.bold)),
+              child: Text(task.taskname, style: TextStyle(fontSize: dH*0.04, fontWeight: FontWeight.bold)),
             ),
             Divider(
-              color: Color(0xFF8fab59),
+              color: Colors.green,
               thickness: 3,
               height: 0,
               indent:25,
@@ -52,12 +118,11 @@ class W4_Completed extends StatelessWidget {
                   children: <Widget>[
                     Container(
                       padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
-                      //科目名subject
                       child: Text('科目', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
                     ),
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
-                      child: Text('科目名', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
+                      child: Text(task.subject, style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
                     )
                   ]
               ),
@@ -80,8 +145,9 @@ class W4_Completed extends StatelessWidget {
                     ),
                     Container(
                       padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
-                      //締め切りを表示deadline
-                      child: Text('〇月〇日 XX:XX', style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
+                      //W2から課題情報をひっぱてきて日時を表示
+                      child: Text(DateFormat('yyyy/MM/dd HH:mm')
+                          .format(task.deadline), style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.bold)),
                     )
                   ]
               ),
@@ -109,7 +175,7 @@ class W4_Completed extends StatelessWidget {
                         color: Colors.black54,
                       ),
                       padding: EdgeInsets.fromLTRB(dW*0.03, dH*0.005, dW*0.03, dH*0.005),
-                      child: Text('$_state', style: TextStyle(fontSize: std_font_size, color: Colors.white, fontWeight: FontWeight.w400)),
+                      child: Text(_state, style: TextStyle(fontSize: std_font_size, color: Colors.white, fontWeight: FontWeight.w400)),
                     )
                   ]
               ),
@@ -122,20 +188,21 @@ class W4_Completed extends StatelessWidget {
               endIndent: 25,
             ),
 
-            ElevatedButton(
-              child: const Text('削除する'),
+            //From.added 小筆赳 2022.07.01
+            TextButton(
+              child: Text('削除する'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.grey,
+                primary: Colors.green,
                 onPrimary: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                shape: const StadiumBorder(),
               ),
-              onPressed: () {
-                //deleteTask(),
+              onPressed: () async {
+                //課題を消す
+                await TaskDatabase.instance.deleteTask(task.id!);
+                Navigator.of(context).pop();
               },
             ),
-
+            //To.added 小筆赳 2022.07.01
             Container(
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -155,51 +222,74 @@ class W4_Completed extends StatelessWidget {
               endIndent: 40,
             ),
 
-            //ここから提出者のリストを作らなくてはいけないが，分からないのでとりあえず一人分の表示だけ行う
 
-            for(int i = 0; i<3; i++)
-              Column(
-                  children: <Widget>[
-                    Container(
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              margin:EdgeInsets.fromLTRB(dW*0.15, dH*0.01, 0, dH*0.01),
-                              child: Icon(
-                                Icons.assignment_ind,
-                                size: std_font_size,
-                              ),
+            //ここから提出者のリストを作らなくてはいけないが，分からないのでとりあえず一人分の表示だけ行う
+            SizedBox(
+              height: 300,
+              child: ListView.builder(
+                itemCount: results.length,
+                itemBuilder: (context, index){
+                  final result = results[index];
+                  return Container(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            margin:EdgeInsets.fromLTRB(dW*0.15, dH*0.01, 0, dH*0.01),
+                            child: Icon(
+                              Icons.assignment_ind,
+                              size: std_font_size,
                             ),
-                            Container(
-                              margin:EdgeInsets.fromLTRB(dW*0.02, dH*0.01, 0, dH*0.01),
-                              //From. Added 小筆赳 2022.6.12
-                              child: TextButton(
-                              child: Text(Student_id[i], style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.w400)),
-                            onPressed: (){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => W7_Profile()),
-                              );
-                            },
-                              ),
-                              //To. Added 小筆赳 2022.6.12
+                          ),
+                          Container(
+                            margin:EdgeInsets.fromLTRB(dW*0.02, dH*0.01, 0, dH*0.01),
+                            //From. Added 小筆赳 2022.6.12
+                            child: TextButton(
+                              child: Text(result, style: TextStyle(fontSize: std_font_size, fontWeight: FontWeight.w400)),
+                              onPressed: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => W7_Profile()),
+                                );
+                              },
                             ),
-                          ]
-                      ),
+                            //To. Added 小筆赳 2022.6.12
+                          ),
+                        ]
                     ),
-                    Divider(
-                      color: Colors.black26,
-                      thickness: 3,
-                      height: 0,
-                      indent:40,
-                      endIndent: 40,
-                    ),
-                  ]
+                  );
+                  /*Divider(
+                              color: Colors.black26,
+                              thickness: 3,
+                              height: 0,
+                              indent:40,
+                              endIndent: 40,
+                            ),*/
+
+                },
               ),
+            ),
           ]
       ),
+
     );
   }
+
+/* void deleteTask() async{
+    var instance;
+    final db = await instance.database;
+    return await db.delete(
+      tableTasks,
+      where: '${TaskFields.id} = ?',
+      //whereArgs: [id],
+    );
+  }
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    throw UnimplementedError();
+  }*/
+
+
 }
