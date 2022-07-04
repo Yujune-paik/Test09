@@ -71,9 +71,11 @@ class W1_LoginPage extends StatelessWidget{
                       //flag = Login().check(ID.text,password.text);
                       Future<int> _futureOfList = Login().check(ID.text,password.text);
                       int results = await _futureOfList;
-
+                      print(results);
+                      print(password.text);
                       if (results == 1){
                       //ここに押したら反応するコードを書く
+
                         TaskServer().readAllTask(ID.text);
 
                         Navigator.push( //From Added 小筆赳 2022.6.6

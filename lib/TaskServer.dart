@@ -271,8 +271,9 @@ class TaskServer {
         String courseName = coursename.colAt(0);
         listcourse.add(courseName);
 
-    }
-int i=0;
+      }
+
+      int i=0;
       // 課題の名前を取得する
       for (var task in tasks.rowsAssoc) {
         final savertask = Task(
@@ -289,6 +290,7 @@ int i=0;
         i++;
       }
     }
+
     //To. Changed 二宮淑霞 2022.07.01
     await db.close();
 

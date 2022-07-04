@@ -10,8 +10,7 @@
 *** Revision:
 *** V1.1 : 栗田遥生, 2022.07.02
  */
-import 'LogInPage.dart';
-import 'my_page.dart';
+import 'W1_LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'package:mysql_utils/mysql_utils.dart';

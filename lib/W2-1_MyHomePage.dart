@@ -1,3 +1,9 @@
+/*******************************************************
+ *** File name      : W2_2MyHomePage
+ *** Version        : V1.0
+ *** Designer       : 二宮淑霞
+ *** Purpose        : ホームページ2_2
+ *******************************************************/
 import 'package:flutter/material.dart';
 //From. Added 小筆赳 2022.6.9
 import 'W2-2_MyHomePage.dart';
@@ -25,15 +31,15 @@ class W2_1_MyHomePage extends StatefulWidget {
 
 class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
 
-/*
-  List<String>result = [];//関数から持ってきた課題リスト
-  result = read_AllTask(tasks.taskname);
-*/
 
-  //From. 二宮淑霞 2022.7.3
-  //画面遷移時に実行される関数,サーバの課題をローカルに入れる。
+
+  //From. Added 二宮淑霞 2022.7.3
+  //サーバの課題をローカルに入れる。
   String studentNum= "";
+  //未完了課題を格納
+  List<Task> uncomTasks = [];
   void disPush() async{
+
     final SharedPreferences student = await SharedPreferences.getInstance();
     studentNum = student.getString('number') ?? '';
     TaskServer().readAllTask(studentNum);
@@ -42,7 +48,7 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
 
 
   //完了した課題を格納
-  List<Task> completeTasks = [];
+  //List<Task> completeTasks = [];
   //To. Added 二宮淑霞 2022.7.3
 
 
@@ -53,20 +59,30 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
 
 
 
-
   @override
   void initState() {
     super.initState();
     disPush();
     loadTasks();
+
   }
 
+  void uncompList(){
+    uncomTasks = [];
+    for(int j=0;j<tasks.length;j++){
+      if(tasks[j].isCompleted==false){
+        uncomTasks.add(tasks[j]);
+      }
 
+    }
+
+  }
 
   @override
   void dispose() {
-    TaskDatabase.instance.closeDatabase();
     super.dispose();
+    TaskDatabase.instance.closeDatabase();
+
   }
 
   Future loadTasks() async {
@@ -74,30 +90,43 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
     await TaskDatabase.instance.deleteExpiredTask();
     tasks = await TaskDatabase.instance.readAllTask();
     setState(() => isLoading = false);
+    uncompList();
   }
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green, //アプリバーの背景色
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.account_circle,),
-            onPressed: () {
-              //From. Added 小筆赳 2022.6.9
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => W6_Mypage()),
-              );//To.Changed　小筆赳 2022.6.9
-            },
+          ButtonBar(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.refresh,),
+                onPressed: () {
+                  loadTasks();
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.account_circle,),
+                onPressed: () {
+                  //From. Added 小筆赳 2022.6.9
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => W6_Mypage()),
+                  );//To.Changed　小筆赳 2022.6.9
+                },
+              ),
+
+            ],
           ),
         ],
       ),
       body:  Container(
-        width: double.infinity,
+        width:  size.width,
         padding:const EdgeInsets.all(30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -162,10 +191,11 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
             SizedBox(
               height: 500,
               child: ListView.builder(
-                itemCount: tasks.length,
+                itemCount: uncomTasks.length,
                 itemBuilder: (context, index){
-                  final task = tasks[index];
+                  final task = uncomTasks[index];
                   return Card(
+
 
                     child:InkWell(
                     child: Padding(
@@ -202,6 +232,10 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
                               if(task.isPrivate != '-1') {
                                 TaskServer().addWhoCompleted(task.isPrivate,studentNum);
                               }
+                              //completeTasks.add(task);
+                              //await TaskDatabase.instance.deleteTask(task.id!);
+                              loadTasks();
+
                             },
                           ),
                           /*
@@ -214,9 +248,13 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
 
                     ),
                       onTap: () async {
+                        SharedPreferences.setMockInitialValues({});
+                        final SharedPreferences student = await SharedPreferences.getInstance();
+                        student.setInt('taskid', task.id!);
                         await Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => W4_Completed(),
+
                           ),
                         );
                         loadTasks();
@@ -224,6 +262,7 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
 
                     ),
                   );
+
                 },
               ),
             ),
@@ -276,7 +315,8 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
             MaterialPageRoute(
               builder: (context) => W5_AddTask(),
             ),
-          );//To. Added 小筆赳 2022.6.9
+          );
+          //loadTasks();//To. Added 小筆赳 2022.6.9
         },
         child: const Icon(Icons.add),
         backgroundColor: Colors.green,
@@ -284,8 +324,4 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
       ),
     );
   }
-}
-
-void addAllTask(String studentNum){
-  TaskServer().readAllTask("al20001");
 }

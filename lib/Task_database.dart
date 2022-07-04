@@ -147,6 +147,19 @@ class TaskDatabase {
     );
   }
 
+  //From.  Added 二宮淑霞 2022.7.3
+  //引数として与えられたidに紐づくデータのステータスを未完了に戻す
+  Future<int> deleteCompTask(int id) async {
+    final db = await instance.database;
+    return db.rawUpdate(
+        'UPDATE $tableTasks '
+            'SET isCompleted = -1 '
+            'WHERE ${TaskFields.id} = $id'
+    );
+  }
+
+  //To. Added 二宮淑霞 2022.7.3
+
   //引数として与えられたidに紐づくデータをDBから削除する
   Future<int> deleteTask(int id) async {
     final db = await instance.database;
