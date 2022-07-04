@@ -65,7 +65,7 @@ class _W3_SearchState extends State<W3_Search> {
 
   //List<String> _list = ['高度情報処理演習1A','情報工学通論','a','a','b'];
   //W2からヒットしたものを表示
-
+//From. Changed 二宮淑霞 2022.6.12
   List<Task>tasks = [];
   bool isLoading = false;
   final TextEditingController _categoryNameController =
@@ -84,6 +84,7 @@ class _W3_SearchState extends State<W3_Search> {
     tasks = await TaskDatabase.instance.readAllTask();
     setState(() => isLoading = false);
   }
+  //To. Changed 二宮淑霞 2022.6.12
 
   Widget _searchTextField() {
     return TextField(
