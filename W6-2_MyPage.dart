@@ -12,53 +12,51 @@ class SecondScreen extends StatefulWidget {
 
 class _SecondScreenState extends State<SecondScreen> {
   List<Widget> _items = <Widget>[];
-  List results=[];
+  List results = [];
+
   @override
-  void initState()async {
-    super.initState();
+  void read()  async{
     Future<List> _futureOfList = read_Address().read_address();
-     results = await _futureOfList;
+    results = await _futureOfList;
   }
 
-
+  @override
+  void initState() {
+    super.initState();
+    read();
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text('公開する連絡先'),
-      ),
-      body:  ListView.separated(
-        itemCount: results.length,
-        itemBuilder: (context, index){
-          return ListTile(
-
-            title: Text(results[index]['text']),
-            subtitle: Text(results[index]['date']),
-
-            //バックボタン
-            trailing: IconButton(
-              iconSize: 30,
-              icon: const Icon(Icons.arrow_circle_left_outlined,),
+            title: Text('公開する連絡先'),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.refresh,),
               onPressed: () {
-                //delete_Task;
-                //add_Task;
-                //課題を未提出に戻す,delete_Task,add_Task
+                read();
               },
             ),
-            //dense: true,
+          ],
 
+
+      ),
+      body: ListView.separated(
+        itemCount: results.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+
+            title: Text(results[index]),
+            //subtitle: Text(results[index]['date']),
             //クリックされた時の処理（W4）
-
-
           );
         },
-        separatorBuilder: (context, index){
+        separatorBuilder: (context, index) {
           return const Divider();
         },
       ),
     );
   }
-
+}
