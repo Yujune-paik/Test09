@@ -86,7 +86,7 @@ class W1_LoginPage extends StatelessWidget{
 
                         TaskServer().readAllTask(ID.text);
 
-                        Navigator.push( //From Added 小筆赳 2022.6.6
+                        Navigator.pushReplacement( //From Added 小筆赳 2022.6.6
                           context,
                           MaterialPageRoute(
                               builder: (context) => W2_1_MyHomePage(/*ID.text,list*/)
