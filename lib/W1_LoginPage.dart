@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // From. Added 小筆赳 2022.6.8
-import 'package:coriander/main.dart';
+import 'main.dart';
 import 'W2-2_MyHomePage.dart';
 import 'W2-1_MyHomePage.dart';
 import 'Login.dart';
@@ -42,16 +42,16 @@ class W1_LoginPage extends StatelessWidget{
               child: Column(
                 children:[
                   TextFormField(
-                controller: ID,
-                decoration: const InputDecoration(
-                    labelText: "ID :"
-                  ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Enter valid data';
-                  }
-                  return null;
-                },
+                    controller: ID,
+                    decoration: const InputDecoration(
+                        labelText: "ID :"
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Enter valid data';
+                      }
+                      return null;
+                    },
                   ),
                   TextFormField(
                     controller: password,
@@ -74,15 +74,15 @@ class W1_LoginPage extends StatelessWidget{
                       print(results);
                       print(password.text);
                       if (results == 1){
-                      //ここに押したら反応するコードを書く
+                        //ここに押したら反応するコードを書く
 
                         TaskServer().readAllTask(ID.text);
 
                         Navigator.push( //From Added 小筆赳 2022.6.6
                           context,
-                            MaterialPageRoute(
+                          MaterialPageRoute(
                               builder: (context) => W2_1_MyHomePage(/*ID.text,list*/)
-                            ),
+                          ),
                         );//To.Changed　小筆赳 2022.6.9
                       }
                       else if(results == 0){
