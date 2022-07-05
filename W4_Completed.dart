@@ -1,10 +1,3 @@
-/*******************************************************
- *** File name      : W4_Completed.dart
- *** Version        : V1.0
- *** Designer       : 西尾　翔輝
- *** Purpose        : 課題完了表示
- *******************************************************/
-
 import 'package:flutter/material.dart';
 //From. Added 小筆赳 2022.6.9
 import 'package:sqflite/sqflite.dart';
@@ -17,6 +10,7 @@ import 'W7_Profile.dart';
 import 'W2-1_MyHomePage.dart';
 import 'TaskServer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 //To. Added 小筆赳 2022.6.9
 
 class W4_Completed extends StatefulWidget {
@@ -59,6 +53,7 @@ class _W4_CompletedState extends State<W4_Completed>{
 
   }
 
+  //追加した課題を消す処理も必要かも
 
 
 //遷移元から渡される変数を保持する変数を作る
@@ -88,7 +83,6 @@ class _W4_CompletedState extends State<W4_Completed>{
     init();
 
     return Scaffold(
-      //From.added 小筆赳 2022.06.28
       appBar: AppBar(
         backgroundColor: Colors.green,
         leading: TextButton(
@@ -104,7 +98,6 @@ class _W4_CompletedState extends State<W4_Completed>{
           ).pop(),
         ),
       ),
-      //To.added 小筆赳 2022.06.28
       body: Column(
           children: <Widget>[
             Container(
@@ -195,7 +188,6 @@ class _W4_CompletedState extends State<W4_Completed>{
               endIndent: 25,
             ),
 
-            //From.added 小筆赳 2022.07.01
             TextButton(
               child: Text('削除する'),
               style: ElevatedButton.styleFrom(
@@ -209,7 +201,6 @@ class _W4_CompletedState extends State<W4_Completed>{
                 Navigator.of(context).pop();
               },
             ),
-            //To.added 小筆赳 2022.07.01
             Container(
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
