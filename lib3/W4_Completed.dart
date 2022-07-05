@@ -229,14 +229,16 @@ class _W4_CompletedState extends State<W4_Completed>{
               endIndent: 40,
             ),
 
-
             //ここから提出者のリストを作らなくてはいけないが，分からないのでとりあえず一人分の表示だけ行う
             SizedBox(
               height: 300,
               child: ListView.builder(
                 itemCount: results.length,
                 itemBuilder: (context, index){
-                  final result = results[index];
+                  //From.changed 西尾翔輝 2022.07.05
+                  final String result = results[index].colAt(0) as String;
+                  //To.changed 西尾翔輝 2022.07.05
+
                   return Container(
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
