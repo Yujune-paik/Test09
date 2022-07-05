@@ -179,7 +179,7 @@ class _W2_2MyHomePageState extends State<W2_2MyHomePage>{
 
                   ),
                   onPressed: () { //From. Added 小筆赳 2022.6.9
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (context) => W2_1_MyHomePage()),
