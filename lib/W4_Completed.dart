@@ -48,8 +48,10 @@ class _W4_CompletedState extends State<W4_Completed>{
     final SharedPreferences student = await SharedPreferences.getInstance();
     taskid = (student.getInt('taskid') ?? '') as int;
     task = await TaskDatabase.instance.readTask(taskid);
-    Future<List> _futureOfList = TaskServer().completeList(task.taskname);
-    results = await _futureOfList;
+    if(task.isPrivate != -1){
+      Future<List> _futureOfList = TaskServer().completeList(task.isPrivate);
+      results = await _futureOfList;
+    }
 
   }
 
