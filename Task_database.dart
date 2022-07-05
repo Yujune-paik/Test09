@@ -59,25 +59,6 @@ class TaskDatabase {
 
     //引数として与えられたデータを新規タスクとしてDBに追加する
     Future addTask(Task task) async {
-        /*引数はオブジェクト引数にした方がわかりやすい？どうかな
-        引数を(int isPrivate, String task, String subject, String sbId, String deadline)にするなら
-        try {
-            Datetime deadline = DateFormat('y/MM/dd HH:mm').parseStrict(deadline);
-        } catch(e){
-            throw Exception('deadline: invalid value');
-        }
-        //できればdeadlineはStringではなくDateTime型でほしい
-        //（tryの処理を書かなくて済むので）
-        final task = Task(
-            isCompleted: false, 
-            isPrivate: isPrivate,      
-            //自作タスクの場合ここには-1を入れる
-            //サーバからとってきたタスクならサーバ上DBでのidを入れるのでどうだろう
-            taskname: taskname,
-            subject: subject, 
-            sbId: sbId,
-            deadline: deadline, 
-        );*/
         final db = await instance.database;
         await db.insert(tableTasks, task.toJson());
     }
@@ -111,29 +92,12 @@ class TaskDatabase {
 
     //引数として与えられたデータに紐づくデータを編集する
     Future<int> editTask(Task task) async {
-        /*
-        引数を(int id, bool isCompleted, int isPrivate, String task, String subject, String sbId, String deadline)にするなら
-        try {
-            Datetime deadline = DateFormat('y/MM/dd HH:mm').parseStrict(deadline);
-        } catch(e){
-            throw Exception('deadline: invalid value');
-        }
-        final task = Task(
-            id: id,
-            isCompleted: isCompleted,
-            isPrivate: isPrivate,
-            taskname: taskname,
-            subject: subject,
-            sbId: sbId,
-            deadline: deadline,
-        );*/
         final db = await instance.database;
         return db.update(
             tableTasks,
             task.toJson(),
             where: '${TaskFields.id} = ?',
             whereArgs: [task.id],
-            //↑idを引数で渡してくるならtask.idではなくidと書く
         );
     }
 
