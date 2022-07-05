@@ -213,7 +213,7 @@ class TaskServer {
         taskname: task.colAt(1), //課題名
         subject: courseName,//科目名
         sbId: courseId, //科目id
-        deadline: task.colAt(2),//締め切り
+        deadline: DateTime.parse(task.colAt(2)),//締め切り
       );
 
       results.add([task.colAt(0), task.colAt(1), courseName, courseId, task.colAt(2)]);
