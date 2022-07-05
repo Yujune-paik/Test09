@@ -69,8 +69,16 @@ class W1_LoginPage extends StatelessWidget{
                     child:const Text('ログイン'),
                     onPressed: () async {
                       //flag = Login().check(ID.text,password.text);
+                      //変更後(2022-07-05 15:19千手)
+                      int results = 0;
+                      if(password.text!=""&&ID.text!= "") {
+                        Future<int> _futureOfList = Login().check(ID.text,password.text);
+                        results = await _futureOfList;
+                      }
+                      /*変更前
                       Future<int> _futureOfList = Login().check(ID.text,password.text);
                       int results = await _futureOfList;
+                      */
                       print(results);
                       print(password.text);
                       if (results == 1){
