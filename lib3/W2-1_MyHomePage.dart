@@ -167,7 +167,6 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
                     primary: Colors.green,
                     onPrimary: Colors.white,
                     shape: const StadiumBorder(),
-
                   ),
                   onPressed: () {
                   },
@@ -200,14 +199,13 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
                 itemBuilder: (context, index){
                   final task = uncomTasks[index];
                   return Card(
-
-
                     child:InkWell(
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            //(task.isPrivate != '-1') ?
                             Column(
                               children: [
                                 Text(
@@ -215,8 +213,17 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 24,
+                                    //color: Colors.black,
                                   ),
-                                ),
+                                )
+                                /*:Text(
+                                  task.taskname,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24,
+                                    color: Colors.indigo,
+                                  ),
+                                )*/,
                                 Row(
                                   children: [
                                     const Text('期限：'),
@@ -269,8 +276,7 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
                 },
               ),
             ),
-
-
+            
             /*
                       title: Text(kadai_mi[index]['text']),
                       subtitle: Text(kadai_mi[index]['date']),
@@ -290,7 +296,6 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
                               builder: (context) => W4_Completed()),
                         );//To. Added 小筆赳 2022.6.9
                       },*/
-
 
             /*const ButtonBar(
                 children: [
