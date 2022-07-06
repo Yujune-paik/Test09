@@ -222,13 +222,23 @@ class _W2_2MyHomePageState extends State<W2_2MyHomePage>{
                           children: [
                             Column(
                               children: [
+                                //(task.isPrivate != '-1') ?
                                 Text(
                                   task.taskname,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 24,
+                                    //color: Colors.black,
                                   ),
-                                ),
+                                )
+                                /*:Text(
+                                  task.taskname,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24,
+                                    color: Colors.indigo,
+                                  ),
+                                )*/,
                                 Row(
                                   children: [
                                     const Text('期限：'),
