@@ -18,7 +18,13 @@ const String tableTasks = 'tasks';
 
 class TaskFields {
   static final List<String> values = [
-    id, isCompleted, isPrivate, taskname, subject, sbId, deadline
+    id,
+    isCompleted, 
+    isPrivate, 
+    taskname, 
+    subject, 
+    sbId, 
+    deadline
   ];
   static const String id = '_id';
   static const String isCompleted = 'isCompleted';
