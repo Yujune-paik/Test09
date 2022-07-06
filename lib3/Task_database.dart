@@ -59,25 +59,6 @@ class TaskDatabase {
 
   //引数として与えられたデータを新規タスクとしてDBに追加する
   Future addTask(Task task) async {
-    /*引数はオブジェクト引数にした方がわかりやすい？どうかな
-        引数を(String isPrivate, String task, String subject, String sbId, String deadline)にするなら
-        try {
-            Datetime deadline = DateFormat('y/MM/dd HH:mm').parseStrict(deadline);
-        } catch(e){
-            throw Exception('deadline: invalid value');
-        }
-        //できればdeadlineはStringではなくDateTime型でほしい
-        //（tryの処理を書かなくて済むので）
-        final task = Task(
-            isCompleted: false,
-            isPrivate: isPrivate,
-            //自作タスクの場合ここには-1を入れる
-            //サーバからとってきたタスクならサーバ上DBでのidを入れるのでどうだろう
-            taskname: taskname,
-            subject: subject,
-            sbId: sbId,
-            deadline: deadline,
-        );*/
     final db = await instance.database;
     await db.insert(tableTasks, task.toJson());
   }
@@ -111,29 +92,12 @@ class TaskDatabase {
 
   //引数として与えられたデータに紐づくデータを編集する
   Future<int> editTask(Task task) async {
-    /*
-        引数を(int id, bool isCompleted, String isPrivate, String task, String subject, String sbId, String deadline)にするなら
-        try {
-            Datetime deadline = DateFormat('y/MM/dd HH:mm').parseStrict(deadline);
-        } catch(e){
-            throw Exception('deadline: invalid value');
-        }
-        final task = Task(
-            id: id,
-            isCompleted: isCompleted,
-            isPrivate: isPrivate,
-            taskname: taskname,
-            subject: subject,
-            sbId: sbId,
-            deadline: deadline,
-        );*/
     final db = await instance.database;
     return db.update(
       tableTasks,
       task.toJson(),
       where: '${TaskFields.id} = ?',
       whereArgs: [task.id],
-      //↑idを引数で渡してくるならtask.idではなくidと書く
     );
   }
 
@@ -157,7 +121,6 @@ class TaskDatabase {
             'WHERE ${TaskFields.id} = $id'
     );
   }
-
   //To. Added 二宮淑霞 2022.7.3
 
   //引数として与えられたidに紐づくデータをDBから削除する
@@ -181,6 +144,8 @@ class TaskDatabase {
       whereArgs: [now],
     );
   }
+  
+  //サーバから取得したデータをローカルDBに格納する
   Future addTaskForServer(Task task) async {
     final db = await instance.database;
     final maps = await db.query(
