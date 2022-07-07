@@ -42,7 +42,6 @@ class TaskDatabase {
     const String idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const String textType = 'TEXT NOT NULL';
     const String boolType = 'BOOLEAN NOT NULL';
-    const String integerType = 'INTEGER NOT NULL';
 
     await db.execute('''
     CREATE TABLE $tableTasks ( 
