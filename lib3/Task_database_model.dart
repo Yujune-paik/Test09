@@ -15,7 +15,6 @@
 const String tableTasks = 'tasks';
 
 //カラムの名前定義
-
 class TaskFields {
   static final List<String> values = [
     id,
