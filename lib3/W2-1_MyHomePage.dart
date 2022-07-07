@@ -314,19 +314,18 @@ class _W2_1_MyHomePageState extends State<W2_1_MyHomePage>{
       ),
       //課題追加ボタン
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
           //From. Added 小筆赳 2022.6.9
-          Navigator.push(
+          await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => W5_AddTask(),
+              builder: (context) => const W5_AddTask(),
             ),
           );
-          //loadTasks();//To. Added 小筆赳 2022.6.9
+          loadTasks();//To. Added 小筆赳 2022.6.9
         },
-        child: const Icon(Icons.add),
         backgroundColor: Colors.green,
-
+        child: const Icon(Icons.add),
       ),
     );
   }
