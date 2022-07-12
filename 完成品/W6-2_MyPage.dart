@@ -6,6 +6,8 @@
  *******************************************************/
 import 'read_Address.dart';
 import 'package:flutter/material.dart';
+import 'Task_database.dart';
+import 'Task_database_model.dart';
 
 class SecondScreen extends StatefulWidget {
   @override
@@ -13,19 +15,30 @@ class SecondScreen extends StatefulWidget {
 }
 
 class _SecondScreenState extends State<SecondScreen> {
-  List<Widget> _items = <Widget>[];
   List results = [];
 
   @override
-  void read()  async{
+  void read() async{
     Future<List> _futureOfList = read_Address().read_address();
     results = await _futureOfList;
+    loadTask();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    read();
+  int taskid = 0;
+  bool isLoading = false;
+  Task task = Task(
+    isCompleted: false,
+    isPrivate: '-1',
+    taskname: 'taskname',
+    subject: 'subject',
+    sbId: 'sbId',
+    deadline: DateTime.now(),
+  );
+
+  Future loadTask() async {
+    setState(() => isLoading = true);
+    task = await TaskDatabase.instance.readTask(taskid);
+    setState(() => isLoading = false);
   }
 
   @override
@@ -34,13 +47,14 @@ class _SecondScreenState extends State<SecondScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text('公開する連絡先'),
+        title: const Text('公開する連絡先'),
       ),
       body: ListView.separated(
         itemCount: results.length,
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(results[index]),
+            //クリックされた時の処理（W4）
           );
         },
         separatorBuilder: (context, index) {
