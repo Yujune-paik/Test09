@@ -1,3 +1,10 @@
+/*******************************************************
+ *** File name      : W6-1_MyPage
+ *** Version        : V1.0
+ *** Designer       : 小筆赳
+ *** Purpose        : マイページ
+ *******************************************************/
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -10,9 +17,6 @@ import 'W6-2_MyPage.dart';
 import 'add_Address.dart';
 
 
-
-
-//To. Added 小筆赳 2022.6.9
 class W6_Mypage extends StatefulWidget {
   @override
   _W6_MypageState createState() => _W6_MypageState();
