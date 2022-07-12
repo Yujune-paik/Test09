@@ -12,10 +12,8 @@ import 'package:path/path.dart';
 import 'Constants.dart';
 import 'package:sqflite/sqflite.dart';
 import 'W1_LoginPage.dart';
-import 'W3_Search.dart';
 import 'W6-2_MyPage.dart';
 import 'add_Address.dart';
-
 
 class W6_Mypage extends StatefulWidget {
   @override

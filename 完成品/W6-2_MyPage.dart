@@ -6,10 +6,6 @@
  *******************************************************/
 import 'read_Address.dart';
 import 'package:flutter/material.dart';
-import 'constants.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-import 'W6-1_MyPage.dart';
 
 class SecondScreen extends StatefulWidget {
   @override
@@ -43,14 +39,7 @@ class _SecondScreenState extends State<SecondScreen> {
         itemCount: results.length,
         itemBuilder: (context, index) {
           return ListTile(
-
             title: Text(results[index]),
-            //subtitle: Text(results[index]['date']),
-
-
-            //クリックされた時の処理（W4）
-
-
           );
         },
         separatorBuilder: (context, index) {
