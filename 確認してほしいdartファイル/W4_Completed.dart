@@ -1,15 +1,15 @@
 /*******************************************************
-*** File name      : W4_Completed.dart
-*** Version        : V1.0
-*** Designer       : 西尾　翔輝
-*** Purpose        : 課題完了表示
-*******************************************************/
+ *** File name      : W4_Completed.dart
+ *** Version        : V1.0
+ *** Designer       : 西尾　翔輝
+ *** Purpose        : 課題完了表示
+ *******************************************************/
 
 import 'package:flutter/material.dart';
 //From. Added 小筆赳 2022.6.9
+import 'package:taskapptest/W5_AddTask.dart';
 import 'Task_database_model.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/cupertino.dart';
 import 'Task_database.dart';
 import 'W7_Profile.dart';
 import 'TaskServer.dart';
@@ -21,7 +21,6 @@ class W4_Completed extends StatefulWidget {
 
   @override
   _W4_CompletedState createState() => _W4_CompletedState();
-
 }
 
 class _W4_CompletedState extends State<W4_Completed>{
@@ -47,7 +46,6 @@ class _W4_CompletedState extends State<W4_Completed>{
   void init() async{
     final SharedPreferences student = await SharedPreferences.getInstance();
     taskid = (student.getInt('taskid') ?? '') as int;
-    //task = await TaskDatabase.instance.readTask(taskid);
     loadTask();
     Future<List> _futureOfList = TaskServer().completeList(task.taskname);
     results = await _futureOfList;
@@ -59,7 +57,13 @@ class _W4_CompletedState extends State<W4_Completed>{
     setState(() => isLoading = false);
   }
 
+
 //遷移元から渡される変数を保持する変数を作る
+//List<String> result = [];
+//W4_Completed(this.result);
+
+//List<String> Completed = [];
+
   @override
   Widget build(BuildContext context) {
     final double dH = MediaQuery.of(context).size.height; //画面のHeight
@@ -84,18 +88,57 @@ class _W4_CompletedState extends State<W4_Completed>{
       //From.added 小筆赳 2022.06.28
       appBar: AppBar(
         backgroundColor: Colors.green,
-        leading: TextButton(
-          child: const Text(
-            '☓',
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.edit,
+              color: Colors.white,
             ),
+            onPressed: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => W5_AddTask(
+                    task: task,
+                  ),
+                ),
+              );
+            },
           ),
-          onPressed: () => Navigator.of(context
-          ).pop(),
-        ),
+          IconButton(
+            icon: const Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+            onPressed: () async {/*
+              await TaskDatabase.instance.deleteTask(taskid);
+              Navigator.of(context).pop();*/
+              await showDialog<int>(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('確認'),
+                    content: const Text('削除しますか？'),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text('Cancel'),
+                        onPressed: () => Navigator.of(context).pop(0),
+                      ),
+                      TextButton(
+                          child: const Text('OK'),
+                          onPressed: () async {
+                            Navigator.of(context).pop(1);
+                            await TaskDatabase.instance.deleteTask(taskid);
+                            Navigator.of(context).pop();
+                          }
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       //To.added 小筆赳 2022.06.28
       body: Column(
@@ -120,30 +163,29 @@ class _W4_CompletedState extends State<W4_Completed>{
             Container(
               margin:const EdgeInsets.all(10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
-                    child: Text(
-                      '科目',
-                      style: TextStyle(
-                          fontSize: std_font_size,
-                          fontWeight: FontWeight.bold
-                      )
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
+                      child: Text(
+                          '科目',
+                          style: TextStyle(
+                              fontSize: std_font_size,
+                              fontWeight: FontWeight.bold
+                          )
+                      ),
                     ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
-                    child: Text(
-                      task.subject,
-                      style: TextStyle(
-                          fontSize:
-                          std_font_size,
-                          fontWeight: FontWeight.bold
-                      )
-                    ),
-                  )
-                ]
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
+                      child: Text(
+                          task.subject,
+                          style: TextStyle(
+                              fontSize: std_font_size,
+                              fontWeight: FontWeight.bold
+                          )
+                      ),
+                    )
+                  ]
               ),
             ),
             const Divider(
@@ -156,30 +198,30 @@ class _W4_CompletedState extends State<W4_Completed>{
             Container(
               margin:const EdgeInsets.all(10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
-                    child: Text(
-                        '締切',
-                        style: TextStyle(
-                            fontSize: std_font_size,
-                            fontWeight: FontWeight.bold
-                        )
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
+                      child: Text(
+                          '締切',
+                          style: TextStyle(
+                              fontSize: std_font_size,
+                              fontWeight: FontWeight.bold
+                          )
+                      ),
                     ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
-                    //W2から課題情報をひっぱってきて日時を表示
-                    child: Text(DateFormat('yyyy/MM/dd HH:mm')
-                      .format(task.deadline),
-                      style: TextStyle(
-                          fontSize: std_font_size,
-                          fontWeight: FontWeight.bold
-                      )
-                    ),
-                  )
-                ]
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
+                      //W2から課題情報をひっぱてきて日時を表示
+                      child: Text(DateFormat('yyyy/MM/dd HH:mm')
+                          .format(task.deadline),
+                          style: TextStyle(
+                              fontSize: std_font_size,
+                              fontWeight: FontWeight.bold
+                          )
+                      ),
+                    )
+                  ]
               ),
             ),
             const Divider(
@@ -210,14 +252,18 @@ class _W4_CompletedState extends State<W4_Completed>{
                         borderRadius: BorderRadius.circular(5),
                         color: Colors.black54,
                       ),
-                      padding: EdgeInsets.fromLTRB(dW*0.03, dH*0.005, dW*0.03, dH*0.005),
-                      child: Text(
-                          _state,
-                          style: TextStyle(
-                              fontSize: std_font_size,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400
-                          )
+                      padding: EdgeInsets.fromLTRB(
+                          dW*0.03,
+                          dH*0.005,
+                          dW*0.03,
+                          dH*0.005
+                      ),
+                      child:Text(_state, style:
+                      TextStyle(
+                          fontSize: std_font_size,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w400
+                      )
                       ),
                     )
                   ]
@@ -230,37 +276,20 @@ class _W4_CompletedState extends State<W4_Completed>{
               indent:25,
               endIndent: 25,
             ),
-
-            //From.added 小筆赳 2022.07.01
-            TextButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.green,
-                onPrimary: Colors.white,
-                shape: const StadiumBorder(),
-              ),
-              onPressed: () async {
-                //課題を消す
-                await TaskDatabase.instance.deleteTask(task.id!);
-                if (!mounted) return;
-                Navigator.of(context).pop();
-              },
-              child: const Text('削除する'),
-            ),
-            //To.added 小筆赳 2022.07.01
-            Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    margin:EdgeInsets.fromLTRB(dW*0.1, dH*0.025, 0, dH*0.01),
-                    child: Text(
-                        '課題完了者一覧',
-                        style: TextStyle(
-                            fontSize: std_font_size,
-                            fontWeight: FontWeight.bold
-                        )
+            if(task.isPrivate!="-1")Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      margin:EdgeInsets.fromLTRB(dW*0.1, dH*0.025, 0, dH*0.01),
+                      child: Text(
+                          '課題完了者一覧',
+                          style: TextStyle(
+                              fontSize: std_font_size,
+                              fontWeight: FontWeight.bold
+                          )
+                      ),
                     ),
-                  ),
-                ]
+                  ]
               ),
             const Divider(
               color: Colors.black26,
@@ -269,48 +298,56 @@ class _W4_CompletedState extends State<W4_Completed>{
               indent:40,
               endIndent: 40,
             ),
-
-            //ここから提出者のリストを作らなくてはいけないが，分からないのでとりあえず一人分の表示だけ行う
             SizedBox(
               height: 300,
-              child: ListView.builder(
+              child:
+              ListView.builder(
                 itemCount: results.length,
                 itemBuilder: (context, index){
-                  //From.changed 西尾翔輝 2022.07.05
-                  final String result = results[index].colAt(0) as String;
-                  //To.changed 西尾翔輝 2022.07.05
                   return Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        margin:EdgeInsets.fromLTRB(dW*0.15, dH*0.01, 0, dH*0.01),
-                        child: Icon(
-                          Icons.assignment_ind,
-                          size: std_font_size,
-                        ),
-                      ),
-                      Container(
-                        margin:EdgeInsets.fromLTRB(dW*0.02, dH*0.01, 0, dH*0.01),
-                        //From. Added 小筆赳 2022.6.12
-                        child: TextButton(
-                          child: Text(
-                              result,
-                              style: TextStyle(
-                                  fontSize: std_font_size,
-                                  fontWeight: FontWeight.w400
-                              )
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: results[0].colAt(0)!=""? <Widget>[
+                          Container(
+                            margin:EdgeInsets.fromLTRB(
+                                dW*0.15,
+                                dH*0.01,
+                                0,
+                                dH*0.01
+                            ),
+                            child: Icon(
+                              Icons.assignment_ind,
+                              size: std_font_size,
+                            ),
                           ),
-                          onPressed: (){
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => W7_Profile()),
-                            );
-                          },
-                        ),
-                        //To. Added 小筆赳 2022.6.12
-                      ),
-                    ]
+                          Container(
+                            margin:EdgeInsets.fromLTRB(
+                                dW*0.02,
+                                dH*0.01,
+                                0,
+                                dH*0.01
+                            ),
+                            //From. Added 小筆赳 2022.6.12
+                            child: TextButton(
+                              child: Text(
+                                  //From.changed 西尾翔輝 2022.07.05
+                                  results[index].colAt(0),
+                                  //To.changed 西尾翔輝 2022.07.05
+                                  style: TextStyle(
+                                      fontSize: std_font_size,
+                                      fontWeight: FontWeight.w400
+                                  )
+                              ),
+                              onPressed: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => W7_Profile()),
+                                );
+                              },
+                            ),
+                            //To. Added 小筆赳 2022.6.12
+                          ),
+                        ]:<Widget>[]
                   );
                 },
               ),
