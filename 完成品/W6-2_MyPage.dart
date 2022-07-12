@@ -21,7 +21,7 @@ class _SecondScreenState extends State<SecondScreen> {
   void read() async{
     Future<List> _futureOfList = read_Address().read_address();
     results = await _futureOfList;
-    //loadTask();
+    loadTask();
   }
 
   int taskid = 0;
@@ -35,12 +35,11 @@ class _SecondScreenState extends State<SecondScreen> {
     deadline: DateTime.now(),
   );
 
-  /*
   Future loadTask() async {
     setState(() => isLoading = true);
     task = await TaskDatabase.instance.readTask(taskid);
     setState(() => isLoading = false);
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
