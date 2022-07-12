@@ -1,9 +1,9 @@
 /*******************************************************
- *** File name      : W4_Completed.dart
- *** Version        : V1.0
- *** Designer       : 西尾　翔輝
- *** Purpose        : 課題完了表示
- *******************************************************/
+*** File name      : W4_Completed.dart
+*** Version        : V1.0
+*** Designer       : 西尾　翔輝
+*** Purpose        : 課題完了表示
+*******************************************************/
 
 import 'package:flutter/material.dart';
 //From. Added 小筆赳 2022.6.9
@@ -120,30 +120,30 @@ class _W4_CompletedState extends State<W4_Completed>{
             Container(
               margin:const EdgeInsets.all(10),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
-                      child: Text(
-                          '科目',
-                          style: TextStyle(
-                              fontSize: std_font_size,
-                              fontWeight: FontWeight.bold
-                          )
-                      ),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
+                    child: Text(
+                      '科目',
+                      style: TextStyle(
+                          fontSize: std_font_size,
+                          fontWeight: FontWeight.bold
+                      )
                     ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
-                      child: Text(
-                          task.subject,
-                          style: TextStyle(
-                              fontSize:
-                              std_font_size,
-                              fontWeight: FontWeight.bold
-                          )
-                      ),
-                    )
-                  ]
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
+                    child: Text(
+                      task.subject,
+                      style: TextStyle(
+                          fontSize:
+                          std_font_size,
+                          fontWeight: FontWeight.bold
+                      )
+                    ),
+                  )
+                ]
               ),
             ),
             const Divider(
@@ -156,30 +156,30 @@ class _W4_CompletedState extends State<W4_Completed>{
             Container(
               margin:const EdgeInsets.all(10),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
-                      child: Text(
-                          '締切',
-                          style: TextStyle(
-                              fontSize: std_font_size,
-                              fontWeight: FontWeight.bold
-                          )
-                      ),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.fromLTRB(dW*0.12, 0, 0, 0),
+                    child: Text(
+                        '締切',
+                        style: TextStyle(
+                            fontSize: std_font_size,
+                            fontWeight: FontWeight.bold
+                        )
                     ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
-                      //W2から課題情報をひっぱってきて日時を表示
-                      child: Text(DateFormat('yyyy/MM/dd HH:mm')
-                          .format(task.deadline),
-                          style: TextStyle(
-                              fontSize: std_font_size,
-                              fontWeight: FontWeight.bold
-                          )
-                      ),
-                    )
-                  ]
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, dW*0.12, 0),
+                    //W2から課題情報をひっぱってきて日時を表示
+                    child: Text(DateFormat('yyyy/MM/dd HH:mm')
+                      .format(task.deadline),
+                      style: TextStyle(
+                          fontSize: std_font_size,
+                          fontWeight: FontWeight.bold
+                      )
+                    ),
+                  )
+                ]
               ),
             ),
             const Divider(
