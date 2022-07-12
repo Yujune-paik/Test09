@@ -30,6 +30,7 @@ class _SecondScreenState extends State<SecondScreen> {
 
   @override
   Widget build(BuildContext context) {
+    read();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
