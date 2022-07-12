@@ -6,10 +6,6 @@
  *******************************************************/
 import 'read_Address.dart';
 import 'package:flutter/material.dart';
-import 'constants.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-import 'W6-1_MyPage.dart';
 import 'Task_database.dart';
 import 'Task_database_model.dart';
 
@@ -19,12 +15,10 @@ class SecondScreen extends StatefulWidget {
 }
 
 class _SecondScreenState extends State<SecondScreen> {
-  List<Widget> _items = <Widget>[];
   List results = [];
 
   @override
-  void read()  async{
-
+  void read() async{
     Future<List> _futureOfList = read_Address().read_address();
     results = await _futureOfList;
     loadTask();
@@ -53,20 +47,14 @@ class _SecondScreenState extends State<SecondScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text('公開する連絡先'),
+        title: const Text('公開する連絡先'),
       ),
       body: ListView.separated(
         itemCount: results.length,
         itemBuilder: (context, index) {
           return ListTile(
-
             title: Text(results[index]),
-            //subtitle: Text(results[index]['date']),
-
-
             //クリックされた時の処理（W4）
-
-
           );
         },
         separatorBuilder: (context, index) {
