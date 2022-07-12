@@ -79,7 +79,7 @@ class TaskServer {
 
   // From. Changed 二宮淑霞 2022.07.01
   // 課題完了者のリストを取ってくる
-  Future<List> completeList(String TaskName) async {
+  Future<List> completeList(String Taskid) async {
     var db = MysqlUtils(
         settings: {
           'host': '160.16.141.77',
@@ -106,7 +106,7 @@ class TaskServer {
     List results = [];
     //完了者の抽出
     var CplStudents = await db.query(
-        'SELECT CplStudent FROM App_db.TaskInfo where TaskName = ("$TaskName")');
+        'SELECT CplStudent FROM App_db.TaskInfo where TaskId = ("$Taskid")');
 
     //
     for (var CplStudent in CplStudents.rowsAssoc) {

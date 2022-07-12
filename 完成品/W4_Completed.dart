@@ -49,7 +49,7 @@ class _W4_CompletedState extends State<W4_Completed>{
     taskid = (student.getInt('taskid') ?? '') as int;
     //task = await TaskDatabase.instance.readTask(taskid);
     loadTask();
-    Future<List> _futureOfList = TaskServer().completeList(task.taskname);
+    Future<List> _futureOfList = TaskServer().completeList(task.isPrivate);
     results = await _futureOfList;
   }
 
@@ -270,7 +270,6 @@ class _W4_CompletedState extends State<W4_Completed>{
               endIndent: 40,
             ),
 
-            //ここから提出者のリストを作らなくてはいけないが，分からないのでとりあえず一人分の表示だけ行う
             SizedBox(
               height: 300,
               child: ListView.builder(
