@@ -24,7 +24,6 @@ import 'TaskServer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //To. Added 小筆赳 2022.6.8
 
-
 //ホーム画面(未提出)
 
 class W2_2MyHomePage extends StatefulWidget {
