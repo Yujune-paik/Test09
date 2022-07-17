@@ -10,6 +10,7 @@
 *** Revision:
 *** V1.1 : 栗田遥生, 2022.07.02
 *** V1.2 : 西尾翔輝, 2022.07.10 add_Address
+*** V1.3 : 西尾翔輝, 2022.07/17 add_Address
  */
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mysql1/mysql1.dart';
@@ -18,9 +19,9 @@ import 'W6-1_MyPage.dart';
 import 'package:mysql_utils/mysql_utils.dart';
 
 
-
+//From. Changed 西尾　翔輝　2022.07.17
 class add_Address {
-  Future add_address(String addressName,String address) async {
+  Future<int> add_address(String addressName,String address) async {
 
     //学籍情報を取り出す
     final SharedPreferences student = await SharedPreferences.getInstance();
@@ -38,7 +39,7 @@ class add_Address {
     try {
       //From. Added 西尾　翔輝 2022.07.10
       //空文字排除
-      if(studentNum.isEmpty || addressName.isEmpty || address.isEmpty)return 0;
+      if(studentNum.isEmpty || addressName.isEmpty || address.isEmpty)return Future.value(0);
 
       //前後の空白削除
       studentNum = studentNum.trim();
@@ -49,21 +50,23 @@ class add_Address {
       Future<List> _check = read_User(studentNum);//Future型のcheck用リスト
       List check = await _check;//check用リスト
       for(int i=0; i<check.length; i+=3) {
-        if ((check[i + 1] == addressName) && (check[i + 2] == address)) return 0;
+        if ((check[i + 1] == addressName) && (check[i + 2] == address)) return Future.value(0);
       }
-      //To. Added 西尾　翔輝 2022.07.010
+      //To. Added 西尾　翔輝 2022.07.10
 
       await conn.query(
           "INSERT INTO StudentAddr (StudentNum, AddressName, Address) VALUES ('$studentNum','$addressName', '$address')");
-      return 1;
+      return Future.value(1);
     } catch (e) {
-      return 0;
+      return Future.value(0);
     }
 
     finally {
       await conn.close();
     }
   }
+  //To. Changed 西尾　翔輝　2022.07.17
+
 
   //From. Added 西尾　翔輝 2022.07.10
   //ユーザ情報を引き出す
@@ -110,6 +113,6 @@ class add_Address {
     db.close();
     return info;
   }
-//To. Added 西尾　翔輝 2022.07.010
+//To. Added 西尾　翔輝 2022.07.10
 }
 

@@ -15,6 +15,7 @@ import 'W1_LoginPage.dart';
 import 'W6-2_MyPage.dart';
 import 'add_Address.dart';
 
+
 class W6_Mypage extends StatefulWidget {
   @override
   _W6_MypageState createState() => _W6_MypageState();
@@ -39,6 +40,7 @@ class _W6_MypageState extends State<W6_Mypage> {
 
   final name = TextEditingController();
   final address= TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,9 +78,11 @@ class _W6_MypageState extends State<W6_Mypage> {
                     onPrimary: Colors.white,
                     shape: const StadiumBorder(),
                   ),
-                  onPressed: () {
-                    add_Address().add_address(name.text, address.text);
-
+                  //From. Changed 西尾　翔輝　2022.07.17
+                  onPressed: () async{
+                    int results = 0;
+                    Future<int> judge = add_Address().add_address(name.text, address.text);
+                    results = await judge;
                     Navigator.push( //From Added 小筆赳 2022.6.6
                       context,
                       MaterialPageRoute(
@@ -87,15 +91,27 @@ class _W6_MypageState extends State<W6_Mypage> {
 
 
                     _saveData();
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) =>
-                            AlertDialog(
-                              title: Text("追加しました"),
-                              content: Text('公開する連絡先に追加できました'),
-                            )
-                    );
+                    if(results == 1) {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              AlertDialog(
+                                title: Text("追加しました"),
+                                content: Text('公開する連絡先に追加できました'),
+                              )
+                      );
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                          AlertDialog(
+                            title: Text("追加できませんでした"),
+                            content: Text('名前とaddress両方を入力してください'),
+                          )
+                      );
+                    }
                   },
+                  //To. Changed 西尾　翔輝　2022.07.17
                 )
               ],
             ),
